@@ -1,0 +1,2 @@
+export const FINALIZE_PERIOD = 'FINALIZE_PERIOD';
+export const GET_SUMMARY = 'GET_SUMMARY';

@@ -1,0 +1,7 @@
+export const CREATE = 'CREATE';
+export const GET_INFO = 'GET_INFO';
+export const GET_OWN_PAYMENTS = 'GET_OWN_PAYMENTS';
+export const GET_OWN_DEBT = 'GET_OWN_DEBT';
+export const GET_OWN_PAST_PAYMENTS = 'GET_OWN_PAST_PAYMENTS';
+export const GET_OWN_PAST_DEBT = 'GET_OWN_PAST_DEBT';
+export const GET_ALL_PAST_PAYMENTS = 'GET_ALL_PAST_PAYMENTS';
