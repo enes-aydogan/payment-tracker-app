@@ -32,8 +32,7 @@ const RegisterScreen = ({navigation}) => {
       });
 
       if (!isUserExist) {
-        store.dispatch(AuthAction.register(user)).then(res => {
-          console.log('res: register => ', res);
+        store.dispatch(AuthAction.register(user)).then(res => {          
           if (res.success) {
             navigation.goBack();
           }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {View, StyleSheet, FlatList, Dimensions} from 'react-native';
 import {
@@ -18,6 +18,8 @@ import {
   Stack,
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+import LinearGradient from 'react-native-linear-gradient';
 
 import store from '../../store/store';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
@@ -35,6 +37,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
   const [ownPayments, setOwnPayments] = useState([]);
   const [ownDebt, setOwnDebt] = useState([]);
   const [summary, setSummary] = useState([]);
+  const [show, setShow] = useState(false);
 
   const [routes] = React.useState([
     {key: 'first', title: 'Tüm Ödemeler'},
@@ -42,16 +45,27 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
     {key: 'third', title: 'Borçlarım'},
   ]);
 
-  store.dispatch(PaymentAction.getOwnPastPayments(item._id)).then(res => {
-    setOwnPayments(res.data);
-  });
-  store.dispatch(PaymentAction.getOwnPastDebt(item._id)).then(res => {
-    setOwnDebt(res.data);
-    setLoading(false);
-  });
-  store.dispatch(PeriodAction.getSummary(item._id)).then(res => {
-    setSummary(res.data);
-  });
+  const mockOwnPaymentData = [
+    {date: '', description: '', price: ''},
+    {date: '', description: '', price: ''},
+    {date: '', description: '', price: ''},
+    {date: '', description: '', price: ''},
+  ];
+
+  useEffect(() => {
+    store
+      .dispatch(PaymentAction.getOwnPastPayments(allPayments._id))
+      .then(res => {
+        setShow(true);
+        setOwnPayments(res.data);
+      });
+    store.dispatch(PaymentAction.getOwnPastDebt(allPayments._id)).then(res => {
+      setOwnDebt(res.data);
+    });
+    store.dispatch(PeriodAction.getSummary(allPayments._id)).then(res => {
+      setSummary(res.data);
+    });
+  }, []);
 
   function getOwnerName(partnerID) {
     return users.map((obj, index) => {
@@ -131,86 +145,81 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
         />
       </VStack>
       <Divider style={{marginTop: 20, margin: 50}} />
-        <VStack>
-          <Surface
-            style={{
-              backgroundColor: '#ecf0f1',
-              margin: 10,
-              borderRadius: 20,
-              height: verticalScale(40),
-              justifyContent: 'center',
-            }}>
-            <HStack center spacing={140} style={{}}>
-              <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
-              <Text style={{fontWeight: 'bold'}}>
-                {totalPayment(
-                  allPayments.payments,
-                )}{' '}
-                ₺
+      <VStack>
+        <Surface
+          style={{
+            backgroundColor: '#ecf0f1',
+            margin: 10,
+            borderRadius: 20,
+            height: verticalScale(40),
+            justifyContent: 'center',
+          }}>
+          <HStack center spacing={140} style={{}}>
+            <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
+            <Text style={{fontWeight: 'bold'}}>
+              {totalPayment(allPayments.payments)} ₺
+            </Text>
+          </HStack>
+        </Surface>
+        <Surface
+          style={{
+            backgroundColor: '#ecf0f1',
+            margin: 10,
+            borderRadius: 20,
+            height: verticalScale(95),
+            justifyContent: 'center',
+          }}>
+          <HStack center>
+            <Text style={{fontWeight: 'bold', fontSize: 17}}>Period Özeti</Text>
+          </HStack>
+          <HStack>
+            <Box
+              style={{
+                marginLeft: 30,
+                width: Dimensions.get('window').width - 150,
+              }}>
+              <Text style={{fontWeight: 'bold'}}>Borçlu: </Text>
+            </Box>
+            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                }}>
+                {summary.payer}
               </Text>
-            </HStack>
-          </Surface>
-          <Surface
-            style={{
-              backgroundColor: '#ecf0f1',
-              margin: 10,
-              borderRadius: 20,
-              height: verticalScale(95),
-              justifyContent: 'center',
-            }}>
-            <HStack center>
-              <Text style={{fontWeight: 'bold', fontSize: 17}}>
-                Period Özeti
-              </Text>
-            </HStack>
-            <HStack>
-              <Box
-                style={{
-                  marginLeft: 30,
-                  width: Dimensions.get('window').width - 150,
-                }}>
-                <Text style={{fontWeight: 'bold'}}>Borçlu: </Text>
-              </Box>
-              <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                  }}>
-                  {summary.payer}
-                </Text>
-              </Box>
-            </HStack>
-            <HStack>
-              <Box
-                style={{
-                  marginLeft: 30,
-                  width: Dimensions.get('window').width - 150,
-                }}>
-                <Text style={{fontWeight: 'bold'}}>Alacaklı: </Text>
-              </Box>
-              <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
-                <Text style={{fontWeight: 'bold'}}>{summary.payee}</Text>
-              </Box>
-            </HStack>
-            <HStack>
-              <Box
-                style={{
-                  marginLeft: 30,
-                  width: Dimensions.get('window').width - 150,
-                }}>
-                <Text style={{fontWeight: 'bold'}}>Borç Miktarı: </Text>
-              </Box>
-              <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
-                <Text style={{fontWeight: 'bold'}}>{summary.price} ₺</Text>
-              </Box>
-            </HStack>
-          </Surface>
-        </VStack>
+            </Box>
+          </HStack>
+          <HStack>
+            <Box
+              style={{
+                marginLeft: 30,
+                width: Dimensions.get('window').width - 150,
+              }}>
+              <Text style={{fontWeight: 'bold'}}>Alacaklı: </Text>
+            </Box>
+            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
+              <Text style={{fontWeight: 'bold'}}>{summary.payee}</Text>
+            </Box>
+          </HStack>
+          <HStack>
+            <Box
+              style={{
+                marginLeft: 30,
+                width: Dimensions.get('window').width - 150,
+              }}>
+              <Text style={{fontWeight: 'bold'}}>Borç Miktarı: </Text>
+            </Box>
+            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
+              <Text style={{fontWeight: 'bold'}}>{summary.price} ₺</Text>
+            </Box>
+          </HStack>
+        </Surface>
+      </VStack>
     </Stack>
   );
 
   const SecondRoute = () => {
-    console.log('second route wokr');
+    
     return (
       <Stack>
         <VStack
@@ -219,9 +228,98 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
             height: Dimensions.get('window').height - 400,
           }}>
           <FlatList
-            data={ownPayments[0].payments}
+            data={
+              ownPayments.length == 0
+                ? mockOwnPaymentData
+                : ownPayments[0].payments
+            }
             renderItem={({item}) => (
-              <View style={styles.item}>
+              <View>
+                <ShimmerPlaceHolder
+                  style={styles.item}
+                  autoRun
+                  visible={show}
+                  LinearGradient={LinearGradient}>
+                  <Pressable
+                    pressEffect="ripple"
+                    pressEffectColor="white"
+                    onPress={() => console.log('work press')}
+                    style={styles.pressable}>
+                    <HStack center fill spacing={20}>
+                      <Box style={{marginLeft: 10, width: 100}}>
+                        <Text>{new Date(item.date).toLocaleString()}</Text>
+                      </Box>
+                      <Box style={{width: 100}}>
+                        <Text>{item.description}</Text>
+                      </Box>
+                      <Box style={{width: 55}}>
+                        <Text>{item.price + ' ₺'}</Text>
+                      </Box>
+                      <Box style={{width: 25}}>
+                        <Icon
+                          name="eye-outline"
+                          onPress={() =>
+                            openPartnerDialog(
+                              item.partnerPays,
+                              item.ownerID,
+                              item.date,
+                              item.price,
+                              item.description,
+                            )
+                          }
+                          size={24}
+                        />
+                      </Box>
+                    </HStack>
+                  </Pressable>
+                </ShimmerPlaceHolder>
+              </View>
+            )}
+          />
+        </VStack>
+        <Divider style={{marginTop: 20, margin: 50}} />
+        <VStack>
+          <Surface
+            style={{
+              backgroundColor: '#ecf0f1',
+              margin: 10,
+              borderRadius: 20,
+              height: 50,
+              justifyContent: 'center',
+            }}>
+            <HStack center spacing={140} style={{}}>
+              <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
+              <ShimmerPlaceHolder
+                autoRun
+                visible={show}
+                LinearGradient={LinearGradient}>
+                <Text style={{fontWeight: 'bold'}}>
+                  {ownPayments.length == 0
+                    ? ''
+                    : totalPayment(ownPayments[0].payments)}{' '}
+                  ₺
+                </Text>
+              </ShimmerPlaceHolder>
+            </HStack>
+          </Surface>
+        </VStack>
+      </Stack>
+    );
+  };
+
+  const ThirdRoute = () => (
+    <Stack>
+      <VStack
+        style={{marginTop: 15, height: Dimensions.get('window').height - 400}}>
+        <FlatList
+          data={ownDebt.length == 0 ? mockOwnPaymentData : ownDebt[0].debts}
+          renderItem={({item}) => (
+            <View>
+              <ShimmerPlaceHolder
+                style={styles.item}
+                autoRun
+                visible={show}
+                LinearGradient={LinearGradient}>
                 <Pressable
                   pressEffect="ripple"
                   pressEffectColor="white"
@@ -254,75 +352,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                     </Box>
                   </HStack>
                 </Pressable>
-              </View>
-            )}
-          />
-        </VStack>
-        <Divider style={{marginTop: 20, margin: 50}} />
-        <VStack>
-          <Surface
-            style={{
-              backgroundColor: '#ecf0f1',
-              margin: 10,
-              borderRadius: 20,
-              height: 50,
-              justifyContent: 'center',
-            }}>
-            <HStack center spacing={140} style={{}}>
-              <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
-              <Text style={{fontWeight: 'bold'}}>
-                {totalPayment(
-                  ownPayments[0].payments,
-                )}{' '}
-                ₺
-              </Text>
-            </HStack>
-          </Surface>
-        </VStack>
-      </Stack>
-    );
-  };
-
-  const ThirdRoute = () => (
-    <Stack>
-      <VStack
-        style={{marginTop: 15, height: Dimensions.get('window').height - 400}}>
-        <FlatList
-          data={ownDebt[0].debts}
-          renderItem={({item}) => (
-            <View style={styles.item}>
-              <Pressable
-                pressEffect="ripple"
-                pressEffectColor="white"
-                onPress={() => console.log('work press')}
-                style={styles.pressable}>
-                <HStack center fill spacing={20}>
-                  <Box style={{marginLeft: 10, width: 100}}>
-                    <Text>{new Date(item.date).toLocaleString()}</Text>
-                  </Box>
-                  <Box style={{width: 100}}>
-                    <Text>{item.description}</Text>
-                  </Box>
-                  <Box style={{width: 55}}>
-                    <Text>{item.price + ' ₺'}</Text>
-                  </Box>
-                  <Box style={{width: 25}}>
-                    <Icon
-                      name="eye-outline"
-                      onPress={() =>
-                        openPartnerDialog(
-                          item.partnerPays,
-                          item.ownerID,
-                          item.date,
-                          item.price,
-                          item.description,
-                        )
-                      }
-                      size={24}
-                    />
-                  </Box>
-                </HStack>
-              </Pressable>
+              </ShimmerPlaceHolder>
             </View>
           )}
         />
@@ -340,7 +370,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
           <HStack center spacing={140} style={{}}>
             <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
             <Text style={{fontWeight: 'bold'}}>
-              {totalPayment(ownDebt[0].debts)} ₺
+              {ownDebt.length == 0 ? '' : totalPayment(ownDebt[0].debts)} ₺
             </Text>
           </HStack>
         </Surface>
@@ -441,6 +471,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginVertical: 3,
     marginHorizontal: 16,
+    width: horizontalScale(345),
+    height: verticalScale(75),
   },
   pressable: {
     width: '100%',

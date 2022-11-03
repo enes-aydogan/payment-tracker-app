@@ -33,15 +33,13 @@ const OrganizationProcess = ({route, navigation}) => {
   const [allPayments, setAllPayments] = useState([]);
   const [show, setShow] = useState(false);
 
-  function setPaymentStates(type) {
-    console.log("set payments precess")
+  function setPaymentStates(type) {    
     setShow(true);
     setSelectedtItem(type);
     setAllPayments(item.orgID.periods.slice(-1));
 
     store.dispatch(PaymentAction.getOwnPayments(item.orgID._id)).then(res => {
-      setOwnPayments(res.data);
-      console.log("set payments precess-own")
+      setOwnPayments(res.data);      
       setShow(false);
     });
     store.dispatch(PaymentAction.getOwnDebt()).then(res => {

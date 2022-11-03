@@ -39,7 +39,7 @@ const PaymentTabView = ({
     {key: 'second', title: 'Ödemelerim'},
     {key: 'third', title: 'Borçlarım'},
   ]);
-  console.log("user: ",users)
+  
   function getOwnerName(partnerID) {
     return users.map((obj, index) => {
       if (obj.userID._id == partnerID) {
@@ -224,7 +224,7 @@ const PaymentTabView = ({
   );
 
   const SecondRoute = () => {
-    console.log("second route wokr")
+    
     return (
       <Stack>
         <VStack

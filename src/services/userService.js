@@ -1,7 +1,6 @@
 import api from './api';
 
-const isUserExist = mail => {
-  console.log(mail)
+const isUserExist = mail => {  
   return api.post('/users/getUserByMail', {mail: mail});
 };
 

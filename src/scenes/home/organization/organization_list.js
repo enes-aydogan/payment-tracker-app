@@ -29,8 +29,7 @@ const ListOrganizationsScreen = ({navigation}) => {
     {orgID: {name: 'Test'}},
   ];
 
-  const userID = auth.authState.user.id;
-  console.log(data.length);
+  const userID = auth.authState.user.id;  
   store.dispatch(OrgAction.getAllOrgs(userID)).then(res => {
     setShow(true);
     setData(res.data);
@@ -79,6 +78,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Dimensions.get('screen').width,
-    height: 40,
+    height: 50,
   },
 });

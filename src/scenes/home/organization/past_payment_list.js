@@ -13,21 +13,27 @@ import {
   Backdrop,
   BackdropSubheader,
 } from '@react-native-material/core';
-
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+import LinearGradient from 'react-native-linear-gradient';
 import store from '../../../store/store';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
 import PaymentTabView from '../../../components/molecules/PaymentTabView';
+import PastPaymentsTabView from '../../../components/molecules/PastPaymentsTabView';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
 import * as PeriodAction from '../../../store/Actions/period/PeriodAction';
-import {horizontalScale, moderateScale, verticalScale} from '../../../styles/metrics'
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../../../styles/metrics';
 
 const PastPaymentList = ({route}) => {
   const {orgID} = route.params;
   const [revealed, setRevealed] = useState('menu');
   const [pastPayments, setPastPayments] = useState([]);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState({});
   const [users, setUsers] = useState([]);
@@ -37,9 +43,15 @@ const PastPaymentList = ({route}) => {
   const [ownDebt, setOwnDebt] = useState([]);
   const [summary, setSummary] = useState([]);
 
+  const mockData = [
+    {periodName: 'Test'},
+    {periodName: 'Test'},
+    {periodName: 'Test'},
+  ];
+  
   store.dispatch(PaymentAction.getAllPastPayments(orgID)).then(res => {
+    setShow(true);
     setPastPayments(res.data);
-    setShow(false);
   });
   store.dispatch(AuhtAction.getMe()).then(res => {
     setMe(res.data);
@@ -48,19 +60,17 @@ const PastPaymentList = ({route}) => {
     setUsers(res.data);
   });
 
-  function setPaymentStates(item) {
-    console.log("set payments")
+  function setPaymentStates(item) {    
     setSelectedtItem(item);
     setIsSelected(true);
-    setLoading(true)
+    setLoading(true);
     setRevealed(!revealed);
     store.dispatch(PaymentAction.getOwnPastPayments(item._id)).then(res => {
       setOwnPayments(res.data);
     });
     store.dispatch(PaymentAction.getOwnPastDebt(item._id)).then(res => {
-      setOwnDebt(res.data);
-      console.log("set payments- owndebt final")
-      setLoading(false)
+      setOwnDebt(res.data);      
+      setLoading(false);
     });
     store.dispatch(PeriodAction.getSummary(item._id)).then(res => {
       setSummary(res.data);
@@ -73,26 +83,23 @@ const PastPaymentList = ({route}) => {
       revealed={revealed}
       backLayer={
         <SafeAreaView style={{height: Dimensions.get('screen').height}}>
-          {show ? (
-            <View style={[styles.spinner, styles.horizontal]}>
-              <ActivityIndicator
-                size="large"
-                visible={show}
-                textContent={'Loading...'}
-                style={styles.spinnerTextStyle}
-              />
-            </View>
-          ) : (
-            <FlatList
-              data={pastPayments}
-              renderItem={({item}) => (
-                <ListItem
-                  title={item.periodName}
-                  onPress={() => setPaymentStates(item)}
-                />
-              )}
-            />
-          )}
+          <FlatList
+            data={pastPayments.length == 0 ? mockData : pastPayments}
+            renderItem={({item}) => (
+              <View>
+                <ShimmerPlaceHolder
+                  style={styles.image}
+                  autoRun
+                  visible={show}
+                  LinearGradient={LinearGradient}>
+                  <ListItem
+                    title={item.periodName}
+                    onPress={() => setPaymentStates(item)}
+                  />
+                </ShimmerPlaceHolder>
+              </View>
+            )}
+          />
         </SafeAreaView>
       }>
       <BackdropSubheader
@@ -109,27 +116,12 @@ const PastPaymentList = ({route}) => {
         )}
       />
       <SafeAreaView style={{height: 676}}>
-        {isSelected ? ( loading ? (
-          <View style={[styles.spinner, styles.horizontal]}>
-          <ActivityIndicator
-            size="large"
-            visible={show}
-            textContent={'Loading...'}
-            style={styles.spinnerTextStyle}
-          />
-        </View>
-        ):(
-          <PaymentTabView
+        {isSelected ? (
+          <PastPaymentsTabView
             allPayments={selectedtItem}
             users={users}
-            ownPayments={ownPayments}
-            ownDebt={ownDebt}
             me={me}
-            show={show}
-            isPast={true}
-            summary={summary}
           />
-        )
         ) : (
           <View>
             <Text>Test</Text>
@@ -149,7 +141,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     backgroundColor: '#ecf0f1',
     padding: 8,
-    height: Dimensions.get('window').height
+    height: Dimensions.get('window').height,
   },
   spinnerTextStyle: {
     color: '#FFF',
@@ -157,11 +149,15 @@ const styles = StyleSheet.create({
   spinner: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#ecf0f1',    
+    backgroundColor: '#ecf0f1',
   },
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
+  },
+  image: {
+    width: Dimensions.get('screen').width,
+    height: 50,
   },
 });
