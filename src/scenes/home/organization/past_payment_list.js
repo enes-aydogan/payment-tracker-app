@@ -1,12 +1,11 @@
 import {
   View,
   FlatList,
-  ActivityIndicator,
   StyleSheet,
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   ListItem,
@@ -18,37 +17,27 @@ import LinearGradient from 'react-native-linear-gradient';
 import store from '../../../store/store';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
-import PaymentTabView from '../../../components/molecules/PaymentTabView';
 import PastPaymentsTabView from '../../../components/molecules/PastPaymentsTabView';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
 import * as PeriodAction from '../../../store/Actions/period/PeriodAction';
-import {
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from '../../../styles/metrics';
 
-const PastPaymentList = ({route}) => {
-  const {orgID} = route.params;
+const PastPaymentList = ({ route }) => {
+  const { orgID } = route.params;
   const [revealed, setRevealed] = useState('menu');
   const [pastPayments, setPastPayments] = useState([]);
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [me, setMe] = useState({});
   const [users, setUsers] = useState([]);
   const [selectedtItem, setSelectedtItem] = useState({});
   const [isSelected, setIsSelected] = useState(false);
-  const [ownPayments, setOwnPayments] = useState([]);
-  const [ownDebt, setOwnDebt] = useState([]);
-  const [summary, setSummary] = useState([]);
 
   const mockData = [
-    {periodName: 'Test'},
-    {periodName: 'Test'},
-    {periodName: 'Test'},
+    { periodName: 'Test' },
+    { periodName: 'Test' },
+    { periodName: 'Test' },
   ];
-  
+
   store.dispatch(PaymentAction.getAllPastPayments(orgID)).then(res => {
     setShow(true);
     setPastPayments(res.data);
@@ -60,32 +49,21 @@ const PastPaymentList = ({route}) => {
     setUsers(res.data);
   });
 
-  function setPaymentStates(item) {    
+  function setPaymentStates(item) {
     setSelectedtItem(item);
     setIsSelected(true);
-    setLoading(true);
     setRevealed(!revealed);
-    store.dispatch(PaymentAction.getOwnPastPayments(item._id)).then(res => {
-      setOwnPayments(res.data);
-    });
-    store.dispatch(PaymentAction.getOwnPastDebt(item._id)).then(res => {
-      setOwnDebt(res.data);      
-      setLoading(false);
-    });
-    store.dispatch(PeriodAction.getSummary(item._id)).then(res => {
-      setSummary(res.data);
-    });
   }
 
   return (
     <Backdrop
-      style={{backgroundColor: '#FFFFFF'}}
+      style={{ backgroundColor: '#FFFFFF' }}
       revealed={revealed}
       backLayer={
-        <SafeAreaView style={{height: Dimensions.get('screen').height}}>
+        <SafeAreaView style={{ height: Dimensions.get('screen').height }}>
           <FlatList
             data={pastPayments.length == 0 ? mockData : pastPayments}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <View>
                 <ShimmerPlaceHolder
                   style={styles.image}
@@ -115,7 +93,7 @@ const PastPaymentList = ({route}) => {
           />
         )}
       />
-      <SafeAreaView style={{height: 676}}>
+      <SafeAreaView style={{ height: 676 }}>
         {isSelected ? (
           <PastPaymentsTabView
             allPayments={selectedtItem}

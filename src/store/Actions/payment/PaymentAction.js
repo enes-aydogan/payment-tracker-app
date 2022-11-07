@@ -21,21 +21,28 @@ export const create = (payment, orgID) => dispatch => {
 };
 
 export const getInfo = _ => dispatch => {
-  return paymentService
+  dispatch({
+    type: PaymentActionType.GET_INFO_LOADING,
+  });
+  paymentService
     .getInfo()
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PaymentActionType.GET_INFO,
+          type: PaymentActionType.GET_INFO_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PaymentActionType.GET_INFO_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 

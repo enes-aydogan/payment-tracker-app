@@ -1,8 +1,8 @@
-import {View} from 'react-native';
-import React, {useState} from 'react';
-import {Stack, TextInput, Button, Text} from '@react-native-material/core';
+import { View } from 'react-native';
+import React, { useState } from 'react';
+import { Stack, TextInput, Button, Text } from '@react-native-material/core';
 
-const CreateOrganizationScreen = ({navigation}) => {
+const CreateOrganizationScreen = ({ navigation }) => {
   const [name, setName] = useState();
   const [address, setAddress] = useState();
 
@@ -16,7 +16,7 @@ const CreateOrganizationScreen = ({navigation}) => {
   };
   return (
     <View style={{}}>
-      <Stack spacing={2} style={{margin: 20, marginTop: 30}}>
+      <Stack spacing={2} style={{ margin: 20, marginTop: 30 }}>
         <TextInput
           color="#717D84"
           variant="outlined"
@@ -29,14 +29,14 @@ const CreateOrganizationScreen = ({navigation}) => {
           color="#717D84"
           variant="outlined"
           label="Adres"
-          style={{marginTop: 20}}
+          style={{ marginTop: 20 }}
           value={address}
           onChangeText={text => setAddress(text)}
           autoCapitalize="none"
         />
       </Stack>
       <Button
-        style={{margin: 20}}
+        style={{ margin: 20 }}
         onPress={() => createOrg()}
         color="#717D84"
         variant="outlined"

@@ -1,57 +1,58 @@
 import {
   View,
   FlatList,
-  ActivityIndicator,
   StyleSheet,
   SafeAreaView,
-  Text,
-  Image,
   Dimensions,
+  Text,
 } from 'react-native';
-import React, {useState, useContext} from 'react';
-import {ListItem, Stack} from '@react-native-material/core';
+import React, { useState, useContext, useEffect } from 'react';
+import { ListItem, Stack } from '@react-native-material/core';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
-import store from '../../../store/store';
-import {AuthContext} from '../../../utils/AuthContext';
+import { AuthContext } from '../../../utils/AuthContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
-import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
 
-const ListOrganizationsScreen = ({navigation}) => {
+const ListOrganizationsScreen = ({ navigation }) => {
+  const {
+    orgDispatch,
+    orgState: {
+      getAllOrganizations: { data, loading, error },
+    },
+  } = useContext(AuthContext);
+
   const auth = useContext(AuthContext);
-  const [data, setData] = useState({});
-  const [show, setShow] = useState(false);
+
   const mockData = [
-    {orgID: {name: 'Test'}},
-    {orgID: {name: 'Test'}},
-    {orgID: {name: 'Test'}},
+    { orgID: { name: 'Test' } },
+    { orgID: { name: 'Test' } },
+    { orgID: { name: 'Test' } },
   ];
 
-  const userID = auth.authState.user.id;  
-  store.dispatch(OrgAction.getAllOrgs(userID)).then(res => {
-    setShow(true);
-    setData(res.data);
-  });
+  useEffect(() => {
+    const userID = auth.authState.user.id;
+    OrgAction.getAllOrgs(userID)(orgDispatch);
+  }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <FlatList
-        style={{height: 676}}
-        data={data.length === undefined ? mockData : data}
-        renderItem={({item}) => (
+        style={{ height: 676 }}
+        data={loading ? mockData : data.data}
+        renderItem={({ item }) => (
           <View>
             <ShimmerPlaceHolder
               style={styles.image}
               autoRun
-              visible={show}
+              visible={!loading}
               LinearGradient={LinearGradient}>
               <ListItem
                 title={item.orgID.name}
                 leading={<Icon name="home-outline" size={22} />}
                 onPress={() =>
-                  navigation.navigate('OrganizationProcess', {item: item})
+                  navigation.navigate('OrganizationProcess', { item: item })
                 }
               />
             </ShimmerPlaceHolder>

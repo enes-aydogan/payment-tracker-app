@@ -5,13 +5,13 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   ListItem,
   Backdrop,
   BackdropSubheader,
-  Pressable  
+  Pressable,
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -22,8 +22,8 @@ import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
 import OrganizationSetting from '../../../components/molecules/OrganizationSetting';
 import PaymentTabView from '../../../components/molecules/PaymentTabView';
 
-const OrganizationProcess = ({route, navigation}) => {
-  const {item} = route.params;
+const OrganizationProcess = ({ route, navigation }) => {
+  const { item } = route.params;
   const [revealed, setRevealed] = useState('menu');
   const [selectedtItem, setSelectedtItem] = useState('');
   const [users, setUsers] = useState([]);
@@ -33,13 +33,13 @@ const OrganizationProcess = ({route, navigation}) => {
   const [allPayments, setAllPayments] = useState([]);
   const [show, setShow] = useState(false);
 
-  function setPaymentStates(type) {    
+  function setPaymentStates(type) {
     setShow(true);
     setSelectedtItem(type);
     setAllPayments(item.orgID.periods.slice(-1));
 
     store.dispatch(PaymentAction.getOwnPayments(item.orgID._id)).then(res => {
-      setOwnPayments(res.data);      
+      setOwnPayments(res.data);
       setShow(false);
     });
     store.dispatch(PaymentAction.getOwnDebt()).then(res => {
@@ -68,12 +68,14 @@ const OrganizationProcess = ({route, navigation}) => {
 
   return (
     <Backdrop
-      style={{backgroundColor: '#FFFFFF'}}
+      style={{ backgroundColor: '#FFFFFF' }}
       revealed={revealed}
       backLayer={
-        <View style={{height: Dimensions.get('window').height + 100}}>
+        <View style={{ height: Dimensions.get('window').height + 100 }}>
           <View style={styles.pressable}>
-            <Text style={styles.pressable_text}><Icon name="wallet-outline" size={22} /> Ödeme</Text>
+            <Text style={styles.pressable_text}>
+              <Icon name="wallet-outline" size={22} /> Ödeme
+            </Text>
           </View>
           <ListItem
             title="Güncel Ödemeler"
@@ -82,11 +84,13 @@ const OrganizationProcess = ({route, navigation}) => {
           <ListItem
             title="Geçmiş Ödemeler"
             onPress={() =>
-              navigation.navigate('PastPaymentList', {orgID: item.orgID._id})
+              navigation.navigate('PastPaymentList', { orgID: item.orgID._id })
             }
           />
           <View style={styles.pressable}>
-            <Text style={styles.pressable_text}><Icon name="settings-outline" size={22} /> Ev Ayarları</Text>
+            <Text style={styles.pressable_text}>
+              <Icon name="settings-outline" size={22} /> Ev Ayarları
+            </Text>
           </View>
           <ListItem
             title="Üye İşlemleri"
@@ -174,10 +178,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecf0f1',
     borderRadius: 20,
     justifyContent: 'center',
-    height: 35
+    height: 35,
   },
-  pressable_text : {
+  pressable_text: {
     marginLeft: 10,
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

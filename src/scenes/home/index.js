@@ -1,87 +1,83 @@
-import React, {useState, useContext} from 'react';
+import React, { useContext, useEffect } from 'react';
+import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import {
-  View,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
-import {
-  Button,
   Text,
-  Stack,
   HStack,
   VStack,
   Pressable,
   Divider,
   Box,
   Surface,
-  Flex,
 } from '@react-native-material/core';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { AuthContext } from '../../utils/AuthContext';
 import * as UserAction from '../../store/Actions/user/UserAction';
+import { horizontalScale, verticalScale } from '../../styles/metrics';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
-import {
-  horizontalScale,
-  verticalScale,
-  moderateScale,
-} from '../../styles/metrics';
 
-const HomeScreen = ({navigation}) => {
-  const [data, setData] = useState({});
-  const [carouselData, setCarouselData] = useState({});
-  const [show, setShow] = useState(false);
-  
-  const mockData = [{orgName: 'Test', totalPayment: 100}];
-  const listMockData = [{orgName: 'Test'},{orgName: 'Test'},{orgName: 'Test'}]
-  
+const HomeScreen = ({ navigation }) => {
+  const {
+    paymentDispatch,
+    paymentState: {
+      getInfo: { data, loading, error },
+    },
+    userDispatch,
+    userState: {
+      getUserInfo: { userData, userLoading, userError },
+    },
+  } = useContext(AuthContext);
 
-  store.dispatch(UserAction.getUserInfo()).then(res => {
-    setCarouselData(res.data);
-  });
+  const mockData = [{ orgName: 'Test', totalPayment: 100 }];
 
-  store.dispatch(PaymentAction.getInfo()).then(res => {
-    setShow(true);
-    setData(res.data);
-  });
+  const listMockData = [
+    { orgName: 'Test' },
+    { orgName: 'Test' },
+    { orgName: 'Test' },
+  ];
+
+  useEffect(() => {
+    UserAction.getUserInfo()(userDispatch);
+    PaymentAction.getInfo()(paymentDispatch);
+  }, []);
 
   return (
-    <View style={{margin: 5, marginTop: 5, backgroundColor: 'white'}}>
+    <View style={{ margin: 5, marginTop: 5, backgroundColor: 'white' }}>
       <VStack spacing={10}>
         <Carousel
           data={
-            carouselData.payments == undefined
+            userLoading
               ? mockData
-              : carouselData.payments
+              : userData.length < 1
+              ? userData.data
+              : userData.data.payments
           }
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <Surface
               elevation={8}
               style={{
                 margin: 12,
                 borderRadius: 10,
                 height: 200,
-                marginRight: 20,                
+                marginRight: 20,
               }}>
               <VStack spacing={30} center>
                 <ShimmerPlaceHolder
-                  style={{height: 30, marginTop: 40, borderRadius: 10}}
+                  style={{ height: 30, marginTop: 40, borderRadius: 10 }}
                   autoRun
-                  visible={show}
+                  visible={!userLoading}
                   LinearGradient={LinearGradient}>
-                  <Text style={{fontSize: 24}}>{item.orgName}</Text>
+                  <Text style={{ fontSize: 24 }}>{item.orgName}</Text>
                 </ShimmerPlaceHolder>
                 <ShimmerPlaceHolder
-                  style={{height: 25, borderRadius: 10}}
+                  style={{ height: 25, borderRadius: 10 }}
                   autoRun
-                  visible={show}
+                  visible={!userLoading}
                   LinearGradient={LinearGradient}>
-                  <Text style={{fontSize: 24}}>
+                  <Text style={{ fontSize: 24 }}>
                     Harcamam: {item.totalPayment}
                   </Text>
                 </ShimmerPlaceHolder>
@@ -91,36 +87,38 @@ const HomeScreen = ({navigation}) => {
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width}
         />
-        <Divider style={{marginTop: 15, flex: 1}} leadingInset={16} />
-        <VStack style={{marginTop: 6, height: 600}} center spacing={10}>
+        <Divider style={{ marginTop: 15, flex: 1 }} leadingInset={16} />
+        <VStack style={{ marginTop: 6, height: 600 }} center spacing={10}>
           <FlatList
-            data={data.length == undefined ? listMockData : data}
-            renderItem={({item}) => (
+            data={loading ? listMockData : data.data}
+            renderItem={({ item }) => (
               <View style={{}}>
-                  <ShimmerPlaceHolder      
-                    style={styles.item}                            
-                    autoRun
-                    visible={show}
-                    LinearGradient={LinearGradient}>
+                <ShimmerPlaceHolder
+                  style={styles.item}
+                  autoRun
+                  visible={!loading}
+                  LinearGradient={LinearGradient}>
                   <Pressable
                     pressEffect="ripple"
                     pressEffectColor="white"
-                    onPress={() => navigation.navigate('Payment', {item: item})}
+                    onPress={() =>
+                      navigation.navigate('Payment', { item: item })
+                    }
                     style={styles.pressable}>
                     <HStack center fill spacing={30}>
-                      <Box style={{width: '20%'}}>
+                      <Box style={{ width: '20%' }}>
                         <Icon
-                          style={{marginLeft: 15, alignItems: 'flex-start'}}
+                          style={{ marginLeft: 15, alignItems: 'flex-start' }}
                           name="home-outline"
                           size={35}
                         />
                       </Box>
-                      <Box style={{width: '50%'}}>
-                        <Text style={{fontSize: 20}}>{item.orgName}</Text>
+                      <Box style={{ width: '50%' }}>
+                        <Text style={{ fontSize: 20 }}>{item.orgName}</Text>
                       </Box>
-                      <Box style={{width: '10%'}}>
+                      <Box style={{ width: '10%' }}>
                         <Icon
-                          style={{justifyContent: 'flex-end'}}
+                          style={{ justifyContent: 'flex-end' }}
                           name="chevron-forward-outline"
                           size={35}
                         />
@@ -168,82 +166,3 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-
-/**
- * return show ? (
-    <View style={[styles.spinner, styles.horizontal]}>
-      <ActivityIndicator
-        size="large"
-        visible={show}
-        textContent={'Loading...'}
-        style={styles.spinnerTextStyle}
-      />
-    </View>
-  ) : (
-    //#F9F9F9
-    <View style={{margin: 5, marginTop: 5, backgroundColor: 'white'}}>
-      <VStack spacing={10}>
-        <Carousel
-          data={carouselData.payments}
-          renderItem={({item}) => (
-            <Surface
-              elevation={8}
-              style={{
-                margin: 12,
-                borderRadius: 10,
-                height: 200,
-                marginRight: 20,
-              }}>
-              <VStack center>
-                <Text style={{marginTop: 40, fontSize: 24}}>
-                  {item.orgName}
-                </Text>
-                <Text style={{marginTop: 40, fontSize: 24}}>
-                  Harcamam: {item.totalPayment}
-                </Text>
-              </VStack>
-            </Surface>
-          )}
-          sliderWidth={Dimensions.get('window').width}
-          itemWidth={Dimensions.get('window').width}
-        />
-        <Divider style={{marginTop: 15, flex: 1}} leadingInset={16} />        
-        <VStack style={{marginTop: 6, height: 600}} center spacing={10}>
-          <FlatList
-            data={data}
-            renderItem={({item}) => (
-              <View style={styles.item}>
-                <Pressable
-                  pressEffect="ripple"
-                  pressEffectColor="white"
-                  onPress={() => navigation.navigate('Payment', {item: item})}
-                  style={styles.pressable}>
-                  <HStack center fill spacing={30}>
-                    <Box style={{width: '20%'}}>
-                      <Icon
-                        style={{marginLeft: 15, alignItems: 'flex-start'}}
-                        name="home-outline"
-                        size={35}
-                      />
-                    </Box>
-                    <Box style={{width: '50%'}}>
-                      <Text style={{fontSize: 20}}>{item.orgName}</Text>
-                    </Box>
-                    <Box style={{width: '10%'}}>
-                      <Icon
-                        style={{justifyContent: 'flex-end'}}
-                        name="chevron-forward-outline"
-                        size={35}
-                      />
-                    </Box>
-                  </HStack>
-                </Pressable>
-              </View>
-            )}
-          />
-        </VStack>
-      </VStack>
-    </View>
-  );
-};
- */

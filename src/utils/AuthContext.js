@@ -1,10 +1,16 @@
-import React, {createContext, useState} from 'react';
+import React, { createContext, useState, useReducer } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OrgReducer from '../store/Reducers/OrgReducer';
+import orgInitialState from '../store/Reducers/InitialStates/OrgInitialState';
+import PaymentReducer from '../store/Reducers/PaymentReducer';
+import paymentInitialState from '../store/Reducers/InitialStates/PaymentInitialState';
+import userInitialState from '../store/Reducers/InitialStates/UserInitialState';
+import UserReducer from '../store/Reducers/UserReducer';
 
 const AuthContext = createContext(null);
-const {Provider} = AuthContext;
+const { Provider } = AuthContext;
 
-const AuthProvider = ({children}) => {
+const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     accessToken: null,
     authenticated: null,
@@ -32,6 +38,13 @@ const AuthProvider = ({children}) => {
     return authState.accessToken;
   };
 
+  const [orgState, orgDispatch] = useReducer(OrgReducer, orgInitialState);
+  const [paymentState, paymentDispatch] = useReducer(
+    PaymentReducer,
+    paymentInitialState,
+  );
+  const [userState, userDispatch] = useReducer(UserReducer, userInitialState);
+
   return (
     <Provider
       value={{
@@ -39,13 +52,19 @@ const AuthProvider = ({children}) => {
         getAccessToken,
         setAuthState,
         logout,
+        orgState,
+        orgDispatch,
+        paymentState,
+        paymentDispatch,
+        userState,
+        userDispatch,
       }}>
       {children}
     </Provider>
   );
 };
 
-export {AuthContext, AuthProvider};
+export { AuthContext, AuthProvider };
 
 /*
 import {createContext, useContext, useState} from 'react';

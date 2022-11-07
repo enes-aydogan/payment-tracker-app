@@ -40,20 +40,27 @@ export const getUserByID = userID => dispatch => {
 };
 
 export const getUserInfo = _ => dispatch => {
-  return userService
+  dispatch({
+    type: UserActionType.GET_USER_INFO_LOADING,
+  });
+  userService
     .getUserInfo()
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: UserActionType.GET_USER_INFO,
+          type: UserActionType.GET_USER_INFO_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: UserActionType.GET_USER_INFO_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };

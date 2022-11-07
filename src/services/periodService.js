@@ -7,4 +7,4 @@ const finalizePeriod = orgID => {
 const getSummary = perID => {
   return api.get(`/summary/${perID}`);
 };
-export default {finalizePeriod, getSummary};
+export default { finalizePeriod, getSummary };

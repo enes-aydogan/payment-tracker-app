@@ -1,5 +1,5 @@
-import {View, Alert} from 'react-native';
-import React, {useState} from 'react';
+import { View, Alert } from 'react-native';
+import React, { useState } from 'react';
 import {
   TextInput,
   Button,
@@ -8,14 +8,14 @@ import {
   Surface,
   Flex,
 } from '@react-native-material/core';
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import MultiSelect from 'react-native-multiple-select';
 
 import store from '../../store/store';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 
-const PaymentScreen = ({route, navigation}) => {
-  const {item} = route.params;
+const PaymentScreen = ({ route }) => {
+  const { item } = route.params;
   const [price, setPrice] = useState();
   const [description, setDescription] = useState();
   const [selectedItems, setSelectedItems] = useState([]);
@@ -42,8 +42,8 @@ const PaymentScreen = ({route, navigation}) => {
 
   return (
     <View style={{}}>
-      <Surface elevation={2} style={{margin: 12, borderRadius: 10}}>
-        <VStack spacing={2} style={{margin: 20, marginTop: 30}}>
+      <Surface elevation={2} style={{ margin: 12, borderRadius: 10 }}>
+        <VStack spacing={2} style={{ margin: 20, marginTop: 30 }}>
           <TextInput
             color="#717D84"
             variant="filled"
@@ -56,7 +56,7 @@ const PaymentScreen = ({route, navigation}) => {
             color="#717D84"
             variant="filled"
             label="Ücret"
-            style={{marginTop: 20}}
+            style={{ marginTop: 20 }}
             value={price}
             onChangeText={text => setPrice(text)}
           />
@@ -64,11 +64,11 @@ const PaymentScreen = ({route, navigation}) => {
       </Surface>
       <Surface
         elevation={2}
-        style={{margin: 12, borderRadius: 10, minHeight: 225}}>
+        style={{ margin: 12, borderRadius: 10, minHeight: 225 }}>
         <Flex center>
-          <Text style={{marginTop: 20, margin: 10}}>Hesap Ortakları</Text>
+          <Text style={{ marginTop: 20, margin: 10 }}>Hesap Ortakları</Text>
         </Flex>
-        <View style={{margin: 10, borderRadius: 10}}>
+        <View style={{ margin: 10, borderRadius: 10 }}>
           <MultiSelect
             items={item.users}
             uniqueKey="userID"
@@ -84,13 +84,13 @@ const PaymentScreen = ({route, navigation}) => {
             selectedItemIconColor="#717D84"
             itemTextColor="#000"
             displayKey="firstName"
-            searchInputStyle={{color: '#717D84'}}
+            searchInputStyle={{ color: '#717D84' }}
             hideSubmitButton
           />
         </View>
       </Surface>
       <Button
-        style={{margin: 20}}
+        style={{ margin: 20 }}
         onPress={() => payment()}
         color="#717D84"
         variant="outlined"
