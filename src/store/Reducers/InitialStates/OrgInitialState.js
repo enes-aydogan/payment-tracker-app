@@ -4,4 +4,9 @@ export default {
     error: null,
     loading: false,
   },
+  getUsersByOrgID: {
+    usersData: [],
+    usersError: null,
+    usersLoading: false
+  }
 };

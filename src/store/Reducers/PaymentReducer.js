@@ -90,6 +90,62 @@ export default paymentReducer = (state, action) => {
           error: payload,
         },
       };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_LOADING:
+      return {
+        ...state,
+        getAllPastPayments: {
+          ...state.getAllPastPayments,
+          allPastPaymentsLoading: true,
+          allPastPaymentsError: null,
+        },
+      };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_SUCCESS:
+      return {
+        ...state,
+        getAllPastPayments: {
+          ...state.getAllPastPayments,
+          allPastPaymentsData: payload,
+          allPastPaymentsError: null,
+          allPastPaymentsLoading: false,
+        },
+      };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_ERROR:
+      return {
+        ...state,
+        getAllPastPayments: {
+          ...state.getAllPastPayments,
+          allPastPaymentsError: payload,
+          allPastPaymentsLoading: false,
+        },
+      };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_LOADIN:
+      return {
+        ...state,
+        getAllPastPaymentsByPerID: {
+          ...state.getAllPastPaymentsByPerID,
+          allPastPaymentsByPerIDLoading: true,
+          allPastPaymentsByPerIDError: null,
+        },
+      };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_SUCCESS:
+      return {
+        ...state,
+        getAllPastPaymentsByPerID: {
+          ...state.getAllPastPaymentsByPerID,
+          allPastPaymentsByPerIDData: payload,
+          allPastPaymentsByPerIDError: null,
+          allPastPaymentsByPerIDLoading: false,
+        },
+      };
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_FAIL:
+      return {
+        ...state,
+        getAllPastPaymentsByPerID: {
+          ...state.getAllPastPaymentsByPerID,
+          allPastPaymentsByPerIDError: payload,
+          allPastPaymentsByPerIDLoading: false,
+        },
+      };
     default:
       return state;
   }

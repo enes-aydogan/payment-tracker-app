@@ -1,5 +1,6 @@
 import * as UserActionType from './UserActionType';
 import userService from '../../../services/userService';
+import authService from '../../../services/authService';
 
 export const isUserExist = mail => dispatch => {
   return userService
@@ -58,6 +59,32 @@ export const getUserInfo = _ => dispatch => {
     .catch(error => {
       dispatch({
         type: UserActionType.GET_USER_INFO_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
+    });
+};
+
+export const getMe = _ => dispatch => {
+  dispatch({
+    type: UserActionType.GET_ME_LOADING,
+  });
+  return authService
+    .getMe()
+    .then(response => {
+      if (response.data.success) {
+        dispatch({
+          type: UserActionType.GET_ME_SUCCESS,
+          payload: {
+            data: response.data.data,
+          },
+        });
+      }
+    })
+    .catch(error => {
+      dispatch({
+        type: UserActionType.GET_ME_FAIL,
         payload: error.response
           ? error.response.data
           : { error: 'Something went wrong, try again' },

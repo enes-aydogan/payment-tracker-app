@@ -12,7 +12,7 @@ export default authReducer = (state, action) => {
     state = getInitialState();
   }
 
-  const {type, payload} = action;
+  const { type, payload } = action;
   switch (type) {
     case AuthActionType.LOGIN:
       return {

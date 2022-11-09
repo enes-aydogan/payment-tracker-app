@@ -52,6 +52,34 @@ export default orgReducer = (state, action) => {
           error: payload,
         },
       };
+    case OrgActionType.GET_USERS_BY_ORGID_LOADING:
+      return {
+        ...state,
+        getUsersByOrgID: {
+          ...state.getUsersByOrgID,
+          usersLoading: true,
+          usersError: null,
+        },
+      };
+    case OrgActionType.GET_USERS_BY_ORGID_SUCCESS:
+      return {
+        ...state,
+        getUsersByOrgID: {
+          ...state.getUsersByOrgID,
+          usersData: payload,
+          usersLoading: false,
+          usersError: null,
+        },
+      };
+    case OrgActionType.GET_USERS_BY_ORGID_FAIL:
+      return {
+        ...state,
+        getUsersByOrgID: {
+          ...state.getUsersByOrgID,
+          usersLoading: false,
+          usersError: payload,
+        },
+      };
     default:
       return state;
   }

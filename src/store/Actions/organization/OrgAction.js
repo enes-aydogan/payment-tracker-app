@@ -48,20 +48,27 @@ export const addUserToOrg = orgUser => dispatch => {
 };
 
 export const getUsersByOrgID = orgID => dispatch => {
-  return organizationSerivce
+  dispatch({
+    type: OrgActionType.GET_USERS_BY_ORGID_LOADING,
+  });
+  organizationSerivce
     .getUsersByOrgID(orgID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: OrgActionType.GET_USERS_BY_ORGID,
+          type: OrgActionType.GET_USERS_BY_ORGID_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: OrgActionType.GET_USERS_BY_ORGID_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };

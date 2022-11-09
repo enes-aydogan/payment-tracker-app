@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Text,
   ListItem,
@@ -14,23 +14,40 @@ import {
 } from '@react-native-material/core';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
+
 import store from '../../../store/store';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { AuthContext } from '../../../utils/AuthContext';
 import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
-import PastPaymentsTabView from '../../../components/molecules/PastPaymentsTabView';
+import * as UserAction from '../../../store/Actions/user/UserAction';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
-import * as PeriodAction from '../../../store/Actions/period/PeriodAction';
+import PastPaymentsTabView from '../../../components/molecules/PastPaymentsTabView';
 
 const PastPaymentList = ({ route }) => {
   const { orgID } = route.params;
   const [revealed, setRevealed] = useState('menu');
-  const [pastPayments, setPastPayments] = useState([]);
-  const [show, setShow] = useState(false);
-  const [me, setMe] = useState({});
-  const [users, setUsers] = useState([]);
   const [selectedtItem, setSelectedtItem] = useState({});
   const [isSelected, setIsSelected] = useState(false);
+
+  const {
+    paymentDispatch,
+    paymentState: {
+      getAllPastPayments: {
+        allPastPaymentsData,
+        allPastPaymentsError,
+        allPastPaymentsLoading,
+      },
+    },
+    orgDispatch,
+    orgState: {
+      getUsersByOrgID: { usersData, usersError, usersLoading },
+    },
+    userDispatch,
+    userState: {
+      getMe: { getMeData, getMeError, getMeLoading },
+    },
+  } = useContext(AuthContext);
 
   const mockData = [
     { periodName: 'Test' },
@@ -39,23 +56,10 @@ const PastPaymentList = ({ route }) => {
   ];
 
   useEffect(() => {
-    store.dispatch(PaymentAction.getAllPastPayments(orgID)).then(res => {
-      setShow(true);
-      setPastPayments(res.data);
-    });
-    store.dispatch(AuhtAction.getMe()).then(res => {
-      setMe(res.data);
-    });
-    store.dispatch(OrgAction.getUsersByOrgID(orgID)).then(res => {
-      setUsers(res.data);
-    });
+    PaymentAction.getAllPastPayments(orgID)(paymentDispatch);
+    UserAction.getMe()(userDispatch);
+    OrgAction.getUsersByOrgID(orgID)(orgDispatch);
   }, []);
-
-  function setPaymentStates(item) {
-    setSelectedtItem(item);
-    setIsSelected(true);
-    setRevealed(!revealed);
-  }
 
   return (
     <Backdrop
@@ -64,17 +68,25 @@ const PastPaymentList = ({ route }) => {
       backLayer={
         <SafeAreaView style={{ height: Dimensions.get('screen').height }}>
           <FlatList
-            data={pastPayments.length == 0 ? mockData : pastPayments}
+            data={
+              allPastPaymentsLoading && usersLoading && getMeLoading
+                ? mockData
+                : allPastPaymentsData.data
+            }
             renderItem={({ item }) => (
               <View>
                 <ShimmerPlaceHolder
                   style={styles.image}
                   autoRun
-                  visible={show}
+                  visible={!allPastPaymentsLoading}
                   LinearGradient={LinearGradient}>
                   <ListItem
                     title={item.periodName}
-                    onPress={() => setPaymentStates(item)}
+                    onPress={() => {
+                      setSelectedtItem(item);
+                      setIsSelected(true);
+                      setRevealed(!revealed);
+                    }}
                   />
                 </ShimmerPlaceHolder>
               </View>
@@ -99,8 +111,9 @@ const PastPaymentList = ({ route }) => {
         {isSelected ? (
           <PastPaymentsTabView
             allPayments={selectedtItem}
-            users={users}
-            me={me}
+            users={usersData.data}
+            me={getMeData.data}
+            orgID={orgID}
           />
         ) : (
           <View>

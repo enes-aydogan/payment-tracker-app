@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Text,
   ListItem,
@@ -16,6 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import store from '../../../store/store';
+import { AuthContext } from '../../../utils/AuthContext';
 import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
@@ -33,6 +34,13 @@ const OrganizationProcess = ({ route, navigation }) => {
   const [allPayments, setAllPayments] = useState([]);
   const [show, setShow] = useState(false);
 
+  const {
+    orgDispatch,
+    orgState: {
+      getUsersByOrgID: { usersData, usersError, usersLoading },
+    },
+  } = useContext(AuthContext);
+
   function setPaymentStates(type) {
     setShow(true);
     setSelectedtItem(type);
@@ -49,9 +57,7 @@ const OrganizationProcess = ({ route, navigation }) => {
     store.dispatch(AuhtAction.getMe()).then(res => {
       setMe(res.data);
     });
-    store.dispatch(OrgAction.getUsersByOrgID(item.orgID._id)).then(res => {
-      setUsers(res.data);
-    });
+    OrgAction.getUsersByOrgID(item.orgID._id)(orgDispatch);
     setRevealed(prevState => !prevState);
   }
   //console.log(item.orgID.periods.slice(-1)[0].payments[0].partnerPays)
@@ -60,10 +66,8 @@ const OrganizationProcess = ({ route, navigation }) => {
     setShow(true);
     setSelectedtItem(type);
     setRevealed(prevState => !prevState);
-    store.dispatch(OrgAction.getUsersByOrgID(item.orgID._id)).then(res => {
-      setUsers(res.data);
-      setShow(false);
-    });
+    OrgAction.getUsersByOrgID(item.orgID._id)(orgDispatch);
+    setShow(false);
   }
 
   return (
@@ -125,7 +129,7 @@ const OrganizationProcess = ({ route, navigation }) => {
         ) : (
           <OrganizationSetting
             item={item}
-            users={users}
+            users={usersData.data}
             buttonTitle="Üye Ekle"
             labelOrgname="Organizasyon Adı: "
             lablelAddress="Adres: "
@@ -144,7 +148,7 @@ const OrganizationProcess = ({ route, navigation }) => {
         ) : (
           <PaymentTabView
             allPayments={allPayments}
-            users={users}
+            users={usersData.data}
             ownPayments={ownPayments}
             ownDebt={ownDebt}
             me={me}

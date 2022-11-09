@@ -2,6 +2,9 @@ export const ADD_USER_TO_ORG = 'ADD_USER_TO_ORG';
 
 // get users by orgID
 export const GET_USERS_BY_ORGID = 'GET_USERS_BY_ORGID';
+export const GET_USERS_BY_ORGID_LOADING = 'GET_USERS_BY_ORGID_LOADING';
+export const GET_USERS_BY_ORGID_SUCCESS = 'GET_USERS_BY_ORGID_SUCCESS';
+export const GET_USERS_BY_ORGID_FAIL = 'GET_USERS_BY_ORGID_FAIL';
 
 // get all organizations
 export const GET_ALL_ORGANIZATION = 'GET_ALL_ORGANIZATION';

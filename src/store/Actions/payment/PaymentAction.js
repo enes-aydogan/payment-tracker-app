@@ -85,21 +85,54 @@ export const getOwnDebt = _ => dispatch => {
 };
 
 export const getAllPastPayments = orgID => dispatch => {
-  return paymentService
+  dispatch({
+    type: PaymentActionType.GET_ALL_PAST_PAYMENTS_LOADING,
+  });
+  paymentService
     .getAllPastPayments(orgID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PaymentActionType.GET_ALL_PAST_PAYMENTS,
+          type: PaymentActionType.GET_ALL_PAST_PAYMENTS_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PaymentActionType.GET_ALL_PAST_PAYMENTS_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
+    });
+};
+
+export const getAllPastPaymentsByPerID = (orgID, perID) => dispatch => {
+  dispatch({
+    type: PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_LOADIN,
+  });
+  paymentService
+    .getAllPastPaymentsByPerID(orgID, perID)
+    .then(response => {
+      if (response.data.success) {
+        dispatch({
+          type: PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_SUCCESS,
+          payload: {
+            data: response.data.data,
+          },
+        });
+      }
+    })
+    .catch(error => {
+      dispatch({
+        type: PaymentActionType.GET_ALL_PAST_PAYMENTS_BY_PERID_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 

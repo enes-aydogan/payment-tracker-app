@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { totalPayment, getOwnerName } from '../../utils/helpers';
 import { AuthContext } from '../../utils/AuthContext';
 import * as PeriodAction from '../../store/Actions/period/PeriodAction';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
@@ -30,21 +31,25 @@ import {
   verticalScale,
 } from '../../styles/metrics';
 
-const PastPaymentsTabView = ({ allPayments, users, me }) => {
+const PastPaymentsTabView = ({ allPayments, users, me, orgID }) => {
   const [index, setIndex] = React.useState(0);
   const [showPartners, setShowPartners] = useState(false);
   const [dialogData, setDialogData] = useState({});
-  const [summary, setSummary] = useState([]);
 
   const {
+    periodDispatch,
+    periodState: {
+      getSummary: { summaryData, summaryLoading, summaryError },
+    },
     paymentDispatch,
     paymentState: {
       getOwnPastPayments: { paymentData, paymentLoading, paymentError },
       getOwnPastDebts: { debtData, debtLoading, debtError },
-    },
-    periodDispatch,
-    periodState: {
-      getSummary: { summaryData, summaryLoading, summaryError },
+      getAllPastPaymentsByPerID: {
+        allPastPaymentsByPerIDData,
+        allPastPaymentsByPerIDLoading,
+        allPastPaymentsByPerIDError,
+      },
     },
   } = useContext(AuthContext);
 
@@ -65,31 +70,11 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
     PaymentAction.getOwnPastPayments(allPayments._id)(paymentDispatch);
     PaymentAction.getOwnPastDebts(allPayments._id)(paymentDispatch);
     PeriodAction.getSummary(allPayments._id)(periodDispatch);
-    console.log('summary data => ', summaryData);
+    PaymentAction.getAllPastPaymentsByPerID(
+      orgID,
+      allPayments._id,
+    )(paymentDispatch);
   }, [allPayments._id]);
-
-  // {"data": {"payee": "Enes Test", "payer": "Bülen Test", "price": 170}}
-
-  function getOwnerName(partnerID) {
-    return users.map((obj, index) => {
-      if (obj.userID._id == partnerID) {
-        return <Text key={index}>{obj.userID.firstName}</Text>;
-      } else {
-        return <Text key={index}>{me.firstName}</Text>;
-      }
-    });
-  }
-
-  function totalPayment(payments) {
-    let totalPrice = 0;
-    let totalPartnerPrice = 0;
-
-    payments.map((obj, index) => {
-      totalPrice += obj.price;
-      totalPartnerPrice += obj.partnerPays[0].PartnerPrice;
-    });
-    return totalPrice;
-  }
 
   function openPartnerDialog(partnerPays, ownerID, date, price, description) {
     let model = {
@@ -111,41 +96,53 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
           height: Dimensions.get('window').height - 500,
         }}>
         <FlatList
-          data={allPayments.payments}
+          data={
+            allPastPaymentsByPerIDLoading
+              ? mockOwnPaymentData
+              : allPastPaymentsByPerIDData.data
+              ? allPastPaymentsByPerIDData.data[0].payments
+              : allPastPaymentsByPerIDData
+          }
           renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Pressable
-                pressEffect="ripple"
-                pressEffectColor="white"
-                onPress={() => console.log('work press')}
-                style={styles.pressable}>
-                <HStack center fill spacing={20}>
-                  <Box style={{ marginLeft: 10, width: 100 }}>
-                    <Text>{new Date(item.date).toLocaleString()}</Text>
-                  </Box>
-                  <Box style={{ width: 100 }}>
-                    <Text>{item.description}</Text>
-                  </Box>
-                  <Box style={{ width: 55 }}>
-                    <Text>{item.price + ' ₺'}</Text>
-                  </Box>
-                  <Box style={{ width: 25 }}>
-                    <Icon
-                      name="eye-outline"
-                      onPress={() =>
-                        openPartnerDialog(
-                          item.partnerPays,
-                          item.ownerID,
-                          item.date,
-                          item.price,
-                          item.description,
-                        )
-                      }
-                      size={24}
-                    />
-                  </Box>
-                </HStack>
-              </Pressable>
+            <View style={{}}>
+              <ShimmerPlaceHolder
+                style={styles.item}
+                autoRun
+                visible={!allPastPaymentsByPerIDLoading}
+                LinearGradient={LinearGradient}>
+                <Pressable
+                  pressEffect="ripple"
+                  pressEffectColor="white"
+                  onPress={() => console.log('work press')}
+                  style={styles.pressable}>
+                  <HStack center fill spacing={20}>
+                    <Box style={{ marginLeft: 10, width: 100 }}>
+                      <Text>{new Date(item.date).toLocaleString()}</Text>
+                    </Box>
+                    <Box style={{ width: 100 }}>
+                      <Text>{item.description}</Text>
+                    </Box>
+                    <Box style={{ width: 55 }}>
+                      <Text>{item.price + ' ₺'}</Text>
+                    </Box>
+                    <Box style={{ width: 25 }}>
+                      <Icon
+                        name="eye-outline"
+                        onPress={() =>
+                          openPartnerDialog(
+                            item.partnerPays,
+                            item.ownerID,
+                            item.date,
+                            item.price,
+                            item.description,
+                          )
+                        }
+                        size={24}
+                      />
+                    </Box>
+                  </HStack>
+                </Pressable>
+              </ShimmerPlaceHolder>
             </View>
           )}
         />
@@ -163,7 +160,12 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
           <HStack center spacing={140} style={{}}>
             <Text style={{ fontWeight: 'bold' }}>TOPLAM TUTAR: </Text>
             <Text style={{ fontWeight: 'bold' }}>
-              {totalPayment(allPayments.payments)} ₺
+              {allPastPaymentsByPerIDLoading
+                ? ''
+                : allPastPaymentsByPerIDData.data
+                ? totalPayment(allPastPaymentsByPerIDData.data[0].payments)
+                : 'NaN'}{' '}
+              ₺
             </Text>
           </HStack>
         </Surface>
@@ -325,7 +327,7 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
                       ? ''
                       : paymentData.data
                       ? totalPayment(paymentData.data[0].payments)
-                      : '' //totalPayment(paymentData)
+                      : 'NaN' //totalPayment(paymentData)
                   }{' '}
                   ₺
                 </Text>
@@ -413,7 +415,7 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
                 ? ''
                 : debtData.data
                 ? totalPayment(debtData.data[0].debts)
-                : ''}{' '}
+                : 'NaN'}{' '}
               ₺
             </Text>
           </HStack>
@@ -452,7 +454,7 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
             <VStack spacing={5} style={{ maxHeight: 300 }}>
               <HStack spacing={20}>
                 <Text>Harcayan: </Text>
-                <Text>{getOwnerName(dialogData.ownerID)}</Text>
+                <Text>{getOwnerName(dialogData.ownerID, users, me)}</Text>
               </HStack>
               <HStack spacing={24}>
                 <Text>Harcama: </Text>
@@ -481,7 +483,7 @@ const PastPaymentsTabView = ({ allPayments, users, me }) => {
                     <View style={{ margin: 10 }}>
                       <HStack>
                         <Text>İsim: </Text>
-                        {getOwnerName(item.PartnerId)}
+                        {getOwnerName(item.PartnerId, users, me)}
                       </HStack>
                       <HStack>
                         <Text>Pay: </Text>

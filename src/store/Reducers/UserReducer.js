@@ -34,6 +34,34 @@ export default userReducer = (state, action) => {
           userError: payload,
         },
       };
+    case UserActionType.GET_ME_LOADING:
+      return {
+        ...state,
+        getMe: {
+          ...state.getMe,
+          getMeLoading: true,
+          getMeError: null,
+        },
+      };
+    case UserActionType.GET_ME_SUCCESS:
+      return {
+        ...state,
+        getMe: {
+          ...state.getMe,
+          getMeData: payload,
+          getMeLoading: false,
+          getMeError: null,
+        },
+      };
+    case UserActionType.GET_ME_FAIL:
+      return {
+        ...state,
+        getMe: {
+          ...state.getMe,
+          getMeLoading: false,
+          getMeError: payload,
+        },
+      };
     default:
       return state;
   }

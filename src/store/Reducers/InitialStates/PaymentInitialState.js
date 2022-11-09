@@ -14,4 +14,14 @@ export default {
     debtError: null,
     debtLoading: false,
   },
+  getAllPastPayments: {
+    allPastPaymentsData: [],
+    allPastPaymentsError: null,
+    allPastPaymentsLoading: false,
+  },
+  getAllPastPaymentsByPerID: {
+    allPastPaymentsByPerIDData: [],
+    allPastPaymentsByPerIDError: null,
+    allPastPaymentsByPerIDLoading: false,
+  },
 };
