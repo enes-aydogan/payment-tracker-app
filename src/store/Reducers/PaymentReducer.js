@@ -34,6 +34,62 @@ export default paymentReducer = (state, action) => {
           error: payload,
         },
       };
+    case PaymentActionType.GET_OWN_PAST_PAYMENTS_LOADING:
+      return {
+        ...state,
+        getOwnPastPayments: {
+          ...state.getOwnPastPayments,
+          loading: true,
+          error: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAST_PAYMENTS_SUCCESS:
+      return {
+        ...state,
+        getOwnPastPayments: {
+          ...state.getOwnPastPayments,
+          paymentData: payload,
+          paymentLoading: false,
+          paymentError: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAST_PAYMENTS_FAIL:
+      return {
+        ...state,
+        getOwnPastPayments: {
+          ...state.getOwnPastPayments,
+          loading: false,
+          error: payload,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAST_DEBT_LOADING:
+      return {
+        ...state,
+        getOwnPastDebts: {
+          ...state.getOwnPastDebts,
+          loading: true,
+          error: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAST_DEBT_SUCCESS:
+      return {
+        ...state,
+        getOwnPastDebts: {
+          ...state.getOwnPastDebts,
+          debtData: payload,
+          loading: false,
+          error: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAST_DEBT_FAIL:
+      return {
+        ...state,
+        getOwnPastDebts: {
+          ...state.getOwnPastDebts,
+          loading: false,
+          error: payload,
+        },
+      };
     default:
       return state;
   }

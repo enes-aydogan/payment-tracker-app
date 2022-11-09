@@ -21,20 +21,27 @@ export const finalizePeriod = orgID => dispatch => {
 };
 
 export const getSummary = perID => dispatch => {
-  return periodService
+  dispatch({
+    type: PeriodActionType.GET_SUMMARY_LOADING,
+  });
+  periodService
     .getSummary(perID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PeriodActionType.GET_SUMMARY,
+          type: PeriodActionType.GET_SUMMARY_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PeriodActionType.GET_SUMMARY_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };

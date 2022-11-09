@@ -6,6 +6,8 @@ import PaymentReducer from '../store/Reducers/PaymentReducer';
 import paymentInitialState from '../store/Reducers/InitialStates/PaymentInitialState';
 import userInitialState from '../store/Reducers/InitialStates/UserInitialState';
 import UserReducer from '../store/Reducers/UserReducer';
+import PeriodReducer from '../store/Reducers/PeriodReducer';
+import periodInitialState from '../store/Reducers/InitialStates/PeriodInitialState';
 
 const AuthContext = createContext(null);
 const { Provider } = AuthContext;
@@ -45,6 +47,11 @@ const AuthProvider = ({ children }) => {
   );
   const [userState, userDispatch] = useReducer(UserReducer, userInitialState);
 
+  const [periodState, periodDispatch] = useReducer(
+    PeriodReducer,
+    periodInitialState,
+  );
+
   return (
     <Provider
       value={{
@@ -58,6 +65,8 @@ const AuthProvider = ({ children }) => {
         paymentDispatch,
         userState,
         userDispatch,
+        periodState,
+        periodDispatch,
       }}>
       {children}
     </Provider>

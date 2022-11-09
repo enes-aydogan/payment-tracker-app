@@ -16,7 +16,7 @@ const getOwnPastPayments = perID => {
   return api.get(`/payment/ownPastPayments/${perID}`);
 };
 
-const getOwnPastDebt = perID => {
+const getOwnPastDebts = perID => {
   return api.get(`/payment/ownPastDebt/${perID}`);
 };
 
@@ -39,5 +39,5 @@ export default {
   getOwnDebt,
   getOwnPastPayments,
   getAllPastPayments,
-  getOwnPastDebt,
+  getOwnPastDebts,
 };

@@ -1,2 +1,7 @@
+// get summary
+export const GET_SUMMARY_LOADING = 'GET_SUMMARY_LOADING';
+export const GET_SUMMARY_SUCCESS = 'GET_SUMMARY_SUCCESS';
+export const GET_SUMMARY_FAIL = 'GET_SUMMARY_FAIL';
+
+// finalize
 export const FINALIZE_PERIOD = 'FINALIZE_PERIOD';
-export const GET_SUMMARY = 'GET_SUMMARY';

@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   ListItem,
@@ -38,16 +38,18 @@ const PastPaymentList = ({ route }) => {
     { periodName: 'Test' },
   ];
 
-  store.dispatch(PaymentAction.getAllPastPayments(orgID)).then(res => {
-    setShow(true);
-    setPastPayments(res.data);
-  });
-  store.dispatch(AuhtAction.getMe()).then(res => {
-    setMe(res.data);
-  });
-  store.dispatch(OrgAction.getUsersByOrgID(orgID)).then(res => {
-    setUsers(res.data);
-  });
+  useEffect(() => {
+    store.dispatch(PaymentAction.getAllPastPayments(orgID)).then(res => {
+      setShow(true);
+      setPastPayments(res.data);
+    });
+    store.dispatch(AuhtAction.getMe()).then(res => {
+      setMe(res.data);
+    });
+    store.dispatch(OrgAction.getUsersByOrgID(orgID)).then(res => {
+      setUsers(res.data);
+    });
+  }, []);
 
   function setPaymentStates(item) {
     setSelectedtItem(item);

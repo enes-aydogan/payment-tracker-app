@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import {View, StyleSheet, FlatList, Dimensions} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import {
   Text,
   HStack,
@@ -21,51 +21,54 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
-import store from '../../store/store';
-import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
+import { AuthContext } from '../../utils/AuthContext';
 import * as PeriodAction from '../../store/Actions/period/PeriodAction';
+import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
 } from '../../styles/metrics';
 
-const PastPaymentsTabView = ({allPayments, users, me}) => {
+const PastPaymentsTabView = ({ allPayments, users, me }) => {
   const [index, setIndex] = React.useState(0);
   const [showPartners, setShowPartners] = useState(false);
   const [dialogData, setDialogData] = useState({});
-  const [ownPayments, setOwnPayments] = useState([]);
-  const [ownDebt, setOwnDebt] = useState([]);
   const [summary, setSummary] = useState([]);
-  const [show, setShow] = useState(false);
+
+  const {
+    paymentDispatch,
+    paymentState: {
+      getOwnPastPayments: { paymentData, paymentLoading, paymentError },
+      getOwnPastDebts: { debtData, debtLoading, debtError },
+    },
+    periodDispatch,
+    periodState: {
+      getSummary: { summaryData, summaryLoading, summaryError },
+    },
+  } = useContext(AuthContext);
 
   const [routes] = React.useState([
-    {key: 'first', title: 'Tüm Ödemeler'},
-    {key: 'second', title: 'Ödemelerim'},
-    {key: 'third', title: 'Borçlarım'},
+    { key: 'first', title: 'Tüm Ödemeler' },
+    { key: 'second', title: 'Ödemelerim' },
+    { key: 'third', title: 'Borçlarım' },
   ]);
 
   const mockOwnPaymentData = [
-    {date: '', description: '', price: ''},
-    {date: '', description: '', price: ''},
-    {date: '', description: '', price: ''},
-    {date: '', description: '', price: ''},
+    { date: '', description: '', price: '' },
+    { date: '', description: '', price: '' },
+    { date: '', description: '', price: '' },
+    { date: '', description: '', price: '' },
   ];
 
   useEffect(() => {
-    store
-      .dispatch(PaymentAction.getOwnPastPayments(allPayments._id))
-      .then(res => {
-        setShow(true);
-        setOwnPayments(res.data);
-      });
-    store.dispatch(PaymentAction.getOwnPastDebt(allPayments._id)).then(res => {
-      setOwnDebt(res.data);
-    });
-    store.dispatch(PeriodAction.getSummary(allPayments._id)).then(res => {
-      setSummary(res.data);
-    });
-  }, []);
+    PaymentAction.getOwnPastPayments(allPayments._id)(paymentDispatch);
+    PaymentAction.getOwnPastDebts(allPayments._id)(paymentDispatch);
+    PeriodAction.getSummary(allPayments._id)(periodDispatch);
+    console.log('summary data => ', summaryData);
+  }, [allPayments._id]);
+
+  // {"data": {"payee": "Enes Test", "payer": "Bülen Test", "price": 170}}
 
   function getOwnerName(partnerID) {
     return users.map((obj, index) => {
@@ -103,10 +106,13 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
   const FirstRoute = () => (
     <Stack>
       <VStack
-        style={{marginTop: 15, height: Dimensions.get('window').height - 500}}>
+        style={{
+          marginTop: 15,
+          height: Dimensions.get('window').height - 500,
+        }}>
         <FlatList
           data={allPayments.payments}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <View style={styles.item}>
               <Pressable
                 pressEffect="ripple"
@@ -114,16 +120,16 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                 onPress={() => console.log('work press')}
                 style={styles.pressable}>
                 <HStack center fill spacing={20}>
-                  <Box style={{marginLeft: 10, width: 100}}>
+                  <Box style={{ marginLeft: 10, width: 100 }}>
                     <Text>{new Date(item.date).toLocaleString()}</Text>
                   </Box>
-                  <Box style={{width: 100}}>
+                  <Box style={{ width: 100 }}>
                     <Text>{item.description}</Text>
                   </Box>
-                  <Box style={{width: 55}}>
+                  <Box style={{ width: 55 }}>
                     <Text>{item.price + ' ₺'}</Text>
                   </Box>
-                  <Box style={{width: 25}}>
+                  <Box style={{ width: 25 }}>
                     <Icon
                       name="eye-outline"
                       onPress={() =>
@@ -144,7 +150,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
           )}
         />
       </VStack>
-      <Divider style={{marginTop: 20, margin: 50}} />
+      <Divider style={{ marginTop: 20, margin: 50 }} />
       <VStack>
         <Surface
           style={{
@@ -155,8 +161,8 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
             justifyContent: 'center',
           }}>
           <HStack center spacing={140} style={{}}>
-            <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
-            <Text style={{fontWeight: 'bold'}}>
+            <Text style={{ fontWeight: 'bold' }}>TOPLAM TUTAR: </Text>
+            <Text style={{ fontWeight: 'bold' }}>
               {totalPayment(allPayments.payments)} ₺
             </Text>
           </HStack>
@@ -170,7 +176,9 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
             justifyContent: 'center',
           }}>
           <HStack center>
-            <Text style={{fontWeight: 'bold', fontSize: 17}}>Period Özeti</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>
+              Period Özeti
+            </Text>
           </HStack>
           <HStack>
             <Box
@@ -178,14 +186,18 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                 marginLeft: 30,
                 width: Dimensions.get('window').width - 150,
               }}>
-              <Text style={{fontWeight: 'bold'}}>Borçlu: </Text>
+              <Text style={{ fontWeight: 'bold' }}>Borçlu: </Text>
             </Box>
-            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
+            <Box style={{ maxWidth: Dimensions.get('window').width - 100 }}>
               <Text
                 style={{
                   fontWeight: 'bold',
                 }}>
-                {summary.payer}
+                {summaryLoading
+                  ? ''
+                  : summaryData.data
+                  ? summaryData.data.payer
+                  : ''}
               </Text>
             </Box>
           </HStack>
@@ -195,10 +207,16 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                 marginLeft: 30,
                 width: Dimensions.get('window').width - 150,
               }}>
-              <Text style={{fontWeight: 'bold'}}>Alacaklı: </Text>
+              <Text style={{ fontWeight: 'bold' }}>Alacaklı: </Text>
             </Box>
-            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
-              <Text style={{fontWeight: 'bold'}}>{summary.payee}</Text>
+            <Box style={{ maxWidth: Dimensions.get('window').width - 100 }}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {summaryLoading
+                  ? ''
+                  : summaryData.data
+                  ? summaryData.data.payee
+                  : ''}
+              </Text>
             </Box>
           </HStack>
           <HStack>
@@ -207,10 +225,17 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                 marginLeft: 30,
                 width: Dimensions.get('window').width - 150,
               }}>
-              <Text style={{fontWeight: 'bold'}}>Borç Miktarı: </Text>
+              <Text style={{ fontWeight: 'bold' }}>Borç Miktarı: </Text>
             </Box>
-            <Box style={{maxWidth: Dimensions.get('window').width - 100}}>
-              <Text style={{fontWeight: 'bold'}}>{summary.price} ₺</Text>
+            <Box style={{ maxWidth: Dimensions.get('window').width - 100 }}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {summaryLoading
+                  ? ''
+                  : summaryData.data
+                  ? summaryData.data.price
+                  : ''}{' '}
+                ₺
+              </Text>
             </Box>
           </HStack>
         </Surface>
@@ -219,7 +244,6 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
   );
 
   const SecondRoute = () => {
-    
     return (
       <Stack>
         <VStack
@@ -229,16 +253,18 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
           }}>
           <FlatList
             data={
-              ownPayments.length == 0
+              paymentLoading
                 ? mockOwnPaymentData
-                : ownPayments[0].payments
+                : paymentData.data
+                ? paymentData.data[0].payments
+                : paymentData
             }
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <View>
                 <ShimmerPlaceHolder
                   style={styles.item}
                   autoRun
-                  visible={show}
+                  visible={!paymentLoading}
                   LinearGradient={LinearGradient}>
                   <Pressable
                     pressEffect="ripple"
@@ -246,16 +272,16 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                     onPress={() => console.log('work press')}
                     style={styles.pressable}>
                     <HStack center fill spacing={20}>
-                      <Box style={{marginLeft: 10, width: 100}}>
+                      <Box style={{ marginLeft: 10, width: 100 }}>
                         <Text>{new Date(item.date).toLocaleString()}</Text>
                       </Box>
-                      <Box style={{width: 100}}>
+                      <Box style={{ width: 100 }}>
                         <Text>{item.description}</Text>
                       </Box>
-                      <Box style={{width: 55}}>
+                      <Box style={{ width: 55 }}>
                         <Text>{item.price + ' ₺'}</Text>
                       </Box>
-                      <Box style={{width: 25}}>
+                      <Box style={{ width: 25 }}>
                         <Icon
                           name="eye-outline"
                           onPress={() =>
@@ -277,7 +303,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
             )}
           />
         </VStack>
-        <Divider style={{marginTop: 20, margin: 50}} />
+        <Divider style={{ marginTop: 20, margin: 50 }} />
         <VStack>
           <Surface
             style={{
@@ -288,15 +314,19 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
               justifyContent: 'center',
             }}>
             <HStack center spacing={140} style={{}}>
-              <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
+              <Text style={{ fontWeight: 'bold' }}>TOPLAM TUTAR: </Text>
               <ShimmerPlaceHolder
                 autoRun
-                visible={show}
+                visible={!paymentLoading}
                 LinearGradient={LinearGradient}>
-                <Text style={{fontWeight: 'bold'}}>
-                  {ownPayments.length == 0
-                    ? ''
-                    : totalPayment(ownPayments[0].payments)}{' '}
+                <Text style={{ fontWeight: 'bold' }}>
+                  {
+                    paymentLoading
+                      ? ''
+                      : paymentData.data
+                      ? totalPayment(paymentData.data[0].payments)
+                      : '' //totalPayment(paymentData)
+                  }{' '}
                   ₺
                 </Text>
               </ShimmerPlaceHolder>
@@ -310,15 +340,24 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
   const ThirdRoute = () => (
     <Stack>
       <VStack
-        style={{marginTop: 15, height: Dimensions.get('window').height - 400}}>
+        style={{
+          marginTop: 15,
+          height: Dimensions.get('window').height - 400,
+        }}>
         <FlatList
-          data={ownDebt.length == 0 ? mockOwnPaymentData : ownDebt[0].debts}
-          renderItem={({item}) => (
+          data={
+            debtLoading
+              ? mockOwnPaymentData
+              : debtData.data
+              ? debtData.data[0].debts
+              : debtData.data
+          }
+          renderItem={({ item }) => (
             <View>
               <ShimmerPlaceHolder
                 style={styles.item}
                 autoRun
-                visible={show}
+                visible={!debtLoading}
                 LinearGradient={LinearGradient}>
                 <Pressable
                   pressEffect="ripple"
@@ -326,16 +365,16 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                   onPress={() => console.log('work press')}
                   style={styles.pressable}>
                   <HStack center fill spacing={20}>
-                    <Box style={{marginLeft: 10, width: 100}}>
+                    <Box style={{ marginLeft: 10, width: 100 }}>
                       <Text>{new Date(item.date).toLocaleString()}</Text>
                     </Box>
-                    <Box style={{width: 100}}>
+                    <Box style={{ width: 100 }}>
                       <Text>{item.description}</Text>
                     </Box>
-                    <Box style={{width: 55}}>
+                    <Box style={{ width: 55 }}>
                       <Text>{item.price + ' ₺'}</Text>
                     </Box>
-                    <Box style={{width: 25}}>
+                    <Box style={{ width: 25 }}>
                       <Icon
                         name="eye-outline"
                         onPress={() =>
@@ -357,7 +396,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
           )}
         />
       </VStack>
-      <Divider style={{marginTop: 20, margin: 50}} />
+      <Divider style={{ marginTop: 20, margin: 50 }} />
       <VStack>
         <Surface
           style={{
@@ -368,9 +407,14 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
             justifyContent: 'center',
           }}>
           <HStack center spacing={140} style={{}}>
-            <Text style={{fontWeight: 'bold'}}>TOPLAM TUTAR: </Text>
-            <Text style={{fontWeight: 'bold'}}>
-              {ownDebt.length == 0 ? '' : totalPayment(ownDebt[0].debts)} ₺
+            <Text style={{ fontWeight: 'bold' }}>TOPLAM TUTAR: </Text>
+            <Text style={{ fontWeight: 'bold' }}>
+              {debtLoading
+                ? ''
+                : debtData.data
+                ? totalPayment(debtData.data[0].debts)
+                : ''}{' '}
+              ₺
             </Text>
           </HStack>
         </Surface>
@@ -381,22 +425,22 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
   return (
     <>
       <TabView
-        navigationState={{index, routes}}
+        navigationState={{ index, routes }}
         renderScene={SceneMap({
           first: FirstRoute,
           second: SecondRoute,
           third: ThirdRoute,
         })}
         onIndexChange={setIndex}
-        initialLayout={{width: Dimensions.get('window').width}}
+        initialLayout={{ width: Dimensions.get('window').width }}
         renderTabBar={props => (
           <TabBar
             {...props}
-            renderLabel={({route}) => (
-              <Text style={{color: 'black', margin: 8}}>{route.title}</Text>
+            renderLabel={({ route }) => (
+              <Text style={{ color: 'black', margin: 8 }}>{route.title}</Text>
             )}
-            style={{backgroundColor: 'white'}}
-            indicatorStyle={{backgroundColor: 'black'}}
+            style={{ backgroundColor: 'white' }}
+            indicatorStyle={{ backgroundColor: 'black' }}
           />
         )}
         style={styles.container}
@@ -405,7 +449,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
         <DialogHeader title={new Date(dialogData.date).toLocaleString()} />
         <DialogContent>
           <Flex>
-            <VStack spacing={5} style={{maxHeight: 300}}>
+            <VStack spacing={5} style={{ maxHeight: 300 }}>
               <HStack spacing={20}>
                 <Text>Harcayan: </Text>
                 <Text>{getOwnerName(dialogData.ownerID)}</Text>
@@ -418,15 +462,15 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                 <Text>Tutar: </Text>
                 <Text>{dialogData.price} ₺</Text>
               </HStack>
-              <Divider style={{marginTop: 7}} />
+              <Divider style={{ marginTop: 7 }} />
               <HStack center>
-                <Text center style={{marginTop: 10}}>
+                <Text center style={{ marginTop: 10 }}>
                   Partnerler
                 </Text>
               </HStack>
               <FlatList
                 data={dialogData.partnerPays}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <Surface
                     style={{
                       backgroundColor: '#ecf0f1',
@@ -434,7 +478,7 @@ const PastPaymentsTabView = ({allPayments, users, me}) => {
                       borderRadius: 15,
                       marginTop: 7,
                     }}>
-                    <View style={{margin: 10}}>
+                    <View style={{ margin: 10 }}>
                       <HStack>
                         <Text>İsim: </Text>
                         {getOwnerName(item.PartnerId)}
