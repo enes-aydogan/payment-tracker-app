@@ -47,40 +47,56 @@ export const getInfo = _ => dispatch => {
 };
 
 export const getOwnPayments = orgID => dispatch => {
-  return paymentService
+  console.log(orgID);
+  dispatch({
+    type: PaymentActionType.GET_OWN_PAYMENTS_LOADING,
+  });
+  paymentService
     .getOwnPayments(orgID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PaymentActionType.GET_OWN_PAYMENTS,
+          type: PaymentActionType.GET_OWN_PAYMENTS_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PaymentActionType.GET_OWN_PAYMENTS_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 
 export const getOwnDebt = _ => dispatch => {
-  return paymentService
+  dispatch({
+    type: PaymentActionType.GET_OWN_DEBT_LOADING,
+  });
+  paymentService
     .getOwnDebt()
     .then(response => {
+      console.log('act', response.data);
       if (response.data.success) {
         dispatch({
-          type: PaymentActionType.GET_OWN_DEBT,
+          type: PaymentActionType.GET_OWN_DEBT_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PaymentActionType.GET_OWN_DEBT_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 
@@ -181,6 +197,32 @@ export const getOwnPastDebts = perID => dispatch => {
     .catch(error => {
       dispatch({
         type: PaymentActionType.GET_OWN_PAST_DEBT_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
+    });
+};
+
+export const getActivePeriod = orgID => dispatch => {
+  dispatch({
+    type: PaymentActionType.GET_ACTIVE_PERIOD_LOADING,
+  });
+  paymentService
+    .getActivePeriod(orgID)
+    .then(response => {
+      if (response.data.success) {
+        dispatch({
+          type: PaymentActionType.GET_ACTIVE_PERIOD_SUCCESS,
+          payload: {
+            data: response.data.data,
+          },
+        });
+      }
+    })
+    .catch(error => {
+      dispatch({
+        type: PaymentActionType.GET_ACTIVE_PERIOD_FAIL,
         payload: error.response
           ? error.response.data
           : { error: 'Something went wrong, try again' },

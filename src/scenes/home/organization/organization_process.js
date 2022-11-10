@@ -1,63 +1,45 @@
-import {
-  View,
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import React, { useState, useContext } from 'react';
 import {
   Text,
   ListItem,
   Backdrop,
   BackdropSubheader,
-  Pressable,
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import store from '../../../store/store';
 import { AuthContext } from '../../../utils/AuthContext';
-import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
-import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
+import * as UserAction from '../../../store/Actions/user/UserAction';
 import OrganizationSetting from '../../../components/molecules/OrganizationSetting';
 import PaymentTabView from '../../../components/molecules/PaymentTabView';
+import { useEffect } from 'react';
 
 const OrganizationProcess = ({ route, navigation }) => {
   const { item } = route.params;
   const [revealed, setRevealed] = useState('menu');
   const [selectedtItem, setSelectedtItem] = useState('');
-  const [users, setUsers] = useState([]);
-  const [me, setMe] = useState({});
-  const [ownPayments, setOwnPayments] = useState([]);
-  const [ownDebt, setOwnDebt] = useState([]);
   const [allPayments, setAllPayments] = useState([]);
-  const [show, setShow] = useState(false);
-
+  const [orgID, setOrgID] = useState('');
   const {
     orgDispatch,
     orgState: {
       getUsersByOrgID: { usersData, usersError, usersLoading },
     },
+    userDispatch,
+    userState: {
+      getMe: { getMeData, getMeError, getMeLoading },
+    },
   } = useContext(AuthContext);
 
+  useEffect(() => {
+    OrgAction.getUsersByOrgID(item.orgID._id)(orgDispatch);
+    UserAction.getMe()(userDispatch);
+  }, []);
+
   function setPaymentStates(type) {
-    setShow(true);
     setSelectedtItem(type);
     setAllPayments(item.orgID.periods.slice(-1));
-
-    store.dispatch(PaymentAction.getOwnPayments(item.orgID._id)).then(res => {
-      setOwnPayments(res.data);
-      setShow(false);
-    });
-    store.dispatch(PaymentAction.getOwnDebt()).then(res => {
-      setOwnDebt(res.data);
-    });
-
-    store.dispatch(AuhtAction.getMe()).then(res => {
-      setMe(res.data);
-    });
-    OrgAction.getUsersByOrgID(item.orgID._id)(orgDispatch);
+    setOrgID(item.orgID._id);
     setRevealed(prevState => !prevState);
   }
   //console.log(item.orgID.periods.slice(-1)[0].payments[0].partnerPays)
@@ -66,7 +48,6 @@ const OrganizationProcess = ({ route, navigation }) => {
     setShow(true);
     setSelectedtItem(type);
     setRevealed(prevState => !prevState);
-    OrgAction.getUsersByOrgID(item.orgID._id)(orgDispatch);
     setShow(false);
   }
 
@@ -117,44 +98,20 @@ const OrganizationProcess = ({ route, navigation }) => {
         )}
       />
       {selectedtItem == 'settings' ? (
-        show ? (
-          <View style={[styles.spinner, styles.horizontal]}>
-            <ActivityIndicator
-              size="large"
-              visible={show}
-              textContent={'Loading...'}
-              style={styles.spinnerTextStyle}
-            />
-          </View>
-        ) : (
-          <OrganizationSetting
-            item={item}
-            users={usersData.data}
-            buttonTitle="Üye Ekle"
-            labelOrgname="Organizasyon Adı: "
-            lablelAddress="Adres: "
-          />
-        )
+        <OrganizationSetting
+          item={item}
+          users={usersData.data}
+          buttonTitle="Üye Ekle"
+          labelOrgname="Organizasyon Adı: "
+          lablelAddress="Adres: "
+        />
       ) : selectedtItem == 'payments' ? (
-        show ? (
-          <View style={[styles.spinner, styles.horizontal]}>
-            <ActivityIndicator
-              size="large"
-              visible={show}
-              textContent={'Loading...'}
-              style={styles.spinnerTextStyle}
-            />
-          </View>
-        ) : (
-          <PaymentTabView
-            allPayments={allPayments}
-            users={usersData.data}
-            ownPayments={ownPayments}
-            ownDebt={ownDebt}
-            me={me}
-            show={show}
-          />
-        )
+        <PaymentTabView
+          allPayments={allPayments}
+          users={usersData.data}
+          me={getMeData.data}
+          orgID={orgID}
+        />
       ) : selectedtItem == 'test' ? (
         <Text>Test-1</Text>
       ) : (

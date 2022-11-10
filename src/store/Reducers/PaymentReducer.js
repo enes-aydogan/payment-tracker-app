@@ -34,6 +34,62 @@ export default paymentReducer = (state, action) => {
           error: payload,
         },
       };
+    case PaymentActionType.GET_OWN_PAYMENTS_LOADING:
+      return {
+        ...state,
+        getOwnPayments: {
+          ...state.getOwnPayments,
+          paymentLoading: true,
+          paymentError: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAYMENTS_SUCCESS:
+      return {
+        ...state,
+        getOwnPayments: {
+          ...state.getOwnPayments,
+          paymentData: payload,
+          paymentLoading: false,
+          paymentError: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_PAYMENTS_FAIL:
+      return {
+        ...state,
+        getOwnPayments: {
+          ...state.getOwnPayments,
+          paymentLoading: false,
+          paymentError: payload,
+        },
+      };
+    case PaymentActionType.GET_OWN_DEBT_LOADING:
+      return {
+        ...state,
+        getOwnDebts: {
+          ...state.getOwnDebts,
+          debtLoading: true,
+          debtError: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_DEBT_SUCCESS:
+      return {
+        ...state,
+        getOwnDebts: {
+          ...state.getOwnDebts,
+          debtData: payload,
+          debtLoading: false,
+          debtError: null,
+        },
+      };
+    case PaymentActionType.GET_OWN_DEBT_FAIL:
+      return {
+        ...state,
+        getOwnDebts: {
+          ...state.getOwnDebts,
+          debtLoading: false,
+          debtError: payload,
+        },
+      };
     case PaymentActionType.GET_OWN_PAST_PAYMENTS_LOADING:
       return {
         ...state,
@@ -144,6 +200,34 @@ export default paymentReducer = (state, action) => {
           ...state.getAllPastPaymentsByPerID,
           allPastPaymentsByPerIDError: payload,
           allPastPaymentsByPerIDLoading: false,
+        },
+      };
+    case PaymentActionType.GET_ACTIVE_PERIOD_LOADING:
+      return {
+        ...state,
+        getActivePeriod: {
+          ...state.getActivePeriod,
+          activePeriodLoading: true,
+          activePeriodError: null,
+        },
+      };
+    case PaymentActionType.GET_ACTIVE_PERIOD_SUCCESS:
+      return {
+        ...state,
+        getActivePeriod: {
+          ...state.getActivePeriod,
+          activePeriodData: payload,
+          activePeriodLoading: false,
+          activePeriodError: null,
+        },
+      };
+    case PaymentActionType.GET_ACTIVE_PERIOD_FAIL:
+      return {
+        ...state,
+        getActivePeriod: {
+          ...state.getActivePeriod,
+          activePeriodError: payload,
+          activePeriodLoading: false,
         },
       };
     default:

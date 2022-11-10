@@ -28,6 +28,9 @@ const getAllPastPaymentsByPerID = (orgID, perID) => {
   return api.get(`/payment/allPastPaymentsByPerID/${orgID}/${perID}`);
 };
 
+const getActivePeriod = orgID => {
+  return api.get(`/payment/getActivePeriod/${orgID}`);
+};
 const create = (payment, orgID) => {
   return api.post(`/payment/${orgID}`, {
     description: payment.description,
@@ -45,4 +48,5 @@ export default {
   getAllPastPayments,
   getOwnPastDebts,
   getAllPastPaymentsByPerID,
+  getActivePeriod,
 };

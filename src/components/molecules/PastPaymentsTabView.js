@@ -47,7 +47,7 @@ const PastPaymentsTabView = ({ allPayments, users, me, orgID }) => {
       getOwnPastDebts: { debtData, debtLoading, debtError },
       getAllPastPaymentsByPerID: {
         allPastPaymentsByPerIDData,
-        allPastPaymentsByPerIDLoading,
+      allPastPaymentsByPerIDLoading,  
         allPastPaymentsByPerIDError,
       },
     },

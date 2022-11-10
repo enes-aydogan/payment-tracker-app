@@ -62,6 +62,7 @@ export default orgReducer = (state, action) => {
         },
       };
     case OrgActionType.GET_USERS_BY_ORGID_SUCCESS:
+      console.log('orgs red');
       return {
         ...state,
         getUsersByOrgID: {

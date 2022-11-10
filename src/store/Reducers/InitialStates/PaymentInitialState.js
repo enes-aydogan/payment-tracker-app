@@ -4,10 +4,20 @@ export default {
     error: null,
     loading: false,
   },
+  getOwnPayments: {
+    paymentData: [],
+    paymentError: null,
+    paymentLoading: false,
+  },
   getOwnPastPayments: {
     paymentData: [],
     paymentError: null,
     paymentLoading: false,
+  },
+  getOwnDebts: {
+    debtData: [],
+    debtError: null,
+    debtLoading: false,
   },
   getOwnPastDebts: {
     debtData: [],
@@ -23,5 +33,10 @@ export default {
     allPastPaymentsByPerIDData: [],
     allPastPaymentsByPerIDError: null,
     allPastPaymentsByPerIDLoading: false,
+  },
+  getActivePeriod: {
+    activePeriodData: [],
+    activePeriodError: null,
+    activePeriodLoading: false,
   },
 };

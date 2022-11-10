@@ -12,13 +12,11 @@ import {
   Backdrop,
   BackdropSubheader,
 } from '@react-native-material/core';
-import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 
-import store from '../../../store/store';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../../utils/AuthContext';
-import * as AuhtAction from '../../../store/Actions/auth/AuthAction';
 import * as UserAction from '../../../store/Actions/user/UserAction';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as PaymentAction from '../../../store/Actions/payment/PaymentAction';
