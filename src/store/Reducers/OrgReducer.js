@@ -14,11 +14,6 @@ export default orgReducer = (state, action) => {
 
   const { type, payload } = action;
   switch (type) {
-    case OrgActionType.GET_ALL_ORGANIZATION:
-      return {
-        ...state,
-        organizations: payload,
-      };
     case OrgActionType.GET_USERS_BY_ORGID:
       return {
         ...state,
@@ -62,7 +57,6 @@ export default orgReducer = (state, action) => {
         },
       };
     case OrgActionType.GET_USERS_BY_ORGID_SUCCESS:
-      console.log('orgs red');
       return {
         ...state,
         getUsersByOrgID: {

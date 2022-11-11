@@ -47,7 +47,6 @@ export const getInfo = _ => dispatch => {
 };
 
 export const getOwnPayments = orgID => dispatch => {
-  console.log(orgID);
   dispatch({
     type: PaymentActionType.GET_OWN_PAYMENTS_LOADING,
   });
@@ -80,7 +79,6 @@ export const getOwnDebt = _ => dispatch => {
   paymentService
     .getOwnDebt()
     .then(response => {
-      console.log('act', response.data);
       if (response.data.success) {
         dispatch({
           type: PaymentActionType.GET_OWN_DEBT_SUCCESS,

@@ -1,5 +1,5 @@
+import React, { useState, useContext, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
-import React, { useState, useContext } from 'react';
 import {
   Text,
   ListItem,
@@ -7,12 +7,12 @@ import {
   BackdropSubheader,
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import { AuthContext } from '../../../utils/AuthContext';
-import * as OrgAction from '../../../store/Actions/organization/OrgAction';
 import * as UserAction from '../../../store/Actions/user/UserAction';
-import OrganizationSetting from '../../../components/molecules/OrganizationSetting';
 import PaymentTabView from '../../../components/molecules/PaymentTabView';
-import { useEffect } from 'react';
+import * as OrgAction from '../../../store/Actions/organization/OrgAction';
+import OrganizationSetting from '../../../components/molecules/OrganizationSetting';
 
 const OrganizationProcess = ({ route, navigation }) => {
   const { item } = route.params;
@@ -45,10 +45,8 @@ const OrganizationProcess = ({ route, navigation }) => {
   //console.log(item.orgID.periods.slice(-1)[0].payments[0].partnerPays)
   // [{"PartnerId": "6346a155eeefa37c936365e2", "PartnerPrice": 50, "_id": "634ea09fef1ed44c3c311dd1"}]
   function setSettingState(type) {
-    setShow(true);
     setSelectedtItem(type);
     setRevealed(prevState => !prevState);
-    setShow(false);
   }
 
   return (

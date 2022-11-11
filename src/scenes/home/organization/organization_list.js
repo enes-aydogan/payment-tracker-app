@@ -21,9 +21,8 @@ const ListOrganizationsScreen = ({ navigation }) => {
     orgState: {
       getAllOrganizations: { data, loading, error },
     },
+    authState: { authData },
   } = useContext(AuthContext);
-
-  const auth = useContext(AuthContext);
 
   const mockData = [
     { orgID: { name: 'Test' } },
@@ -32,8 +31,7 @@ const ListOrganizationsScreen = ({ navigation }) => {
   ];
 
   useEffect(() => {
-    const userID = auth.authState.user.id;
-    OrgAction.getAllOrgs(userID)(orgDispatch);
+    OrgAction.getAllOrgs(authData.user.id)(orgDispatch);
   }, []);
 
   return (

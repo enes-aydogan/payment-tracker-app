@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Image,
@@ -16,14 +16,17 @@ import {
 } from '@react-native-material/core';
 
 import * as AuthAction from '../../store/Actions/auth/AuthAction';
-import {AuthContext} from '../../utils/AuthContext';
+import { AuthContext } from '../../utils/AuthContext';
 import store from '../../store/store';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [mail, setmail] = useState('enes.aydogan@gmail.com');
   const [password, setPassword] = useState('12qw34er');
   //const [_, setUser] = useAuth();
-  const authContext = useContext(AuthContext);
+  const {
+    authDispatch,
+    authState: { authData, authError, authLoading, isLoggedIn },
+  } = useContext(AuthContext);
 
   const logIn = async () => {
     let user = {
@@ -32,7 +35,8 @@ const LoginScreen = ({navigation}) => {
     };
 
     if (user.mail != undefined && user.password != undefined) {
-      store.dispatch(AuthAction.logIn(user)).then(res => {
+      AuthAction.logIn(user)(authDispatch);
+      /* store.dispatch(AuthAction.logIn(user)).then(res => {
         if (store.getState().authReducer.isLoggedIn) {
           authContext.setAuthState({
             accessToken: res.data.token,
@@ -44,7 +48,7 @@ const LoginScreen = ({navigation}) => {
             },
           });
         }
-      });
+      }); */
     }
   };
 
@@ -54,7 +58,7 @@ const LoginScreen = ({navigation}) => {
         backgroundColor: 'white',
         height: Dimensions.get('window').height,
       }}>
-      <Stack style={{alignItems: 'center', marginTop: 30}}>
+      <Stack style={{ alignItems: 'center', marginTop: 30 }}>
         <View style={styles.container}>
           <Image
             style={styles.tinyLogo}
@@ -62,7 +66,7 @@ const LoginScreen = ({navigation}) => {
           />
         </View>
       </Stack>
-      <Stack spacing={2} style={{margin: 20, marginTop: 30}}>
+      <Stack spacing={2} style={{ margin: 20, marginTop: 30 }}>
         <TextInput
           color="#717D84"
           variant="outlined"
@@ -75,28 +79,26 @@ const LoginScreen = ({navigation}) => {
           color="#717D84"
           variant="outlined"
           label="Şifre"
-          style={{marginTop: 20}}
+          style={{ marginTop: 20 }}
           value={password}
           onChangeText={text => setPassword(text)}
           autoCapitalize="none"
         />
       </Stack>
-      <View style={{alignItems: 'flex-end', marginRight: 20}}>
-        <Text style={{color: '#717D84'}}>Şifremi unuttum!</Text>
+      <View style={{ alignItems: 'flex-end', marginRight: 20 }}>
+        <Text style={{ color: '#717D84' }}>Şifremi unuttum!</Text>
       </View>
       <Button
-        style={{margin: 20, marginTop: 60}}
+        style={{ margin: 20, marginTop: 60 }}
         onPress={() => logIn()}
         color="#717D84"
         variant="outlined"
         title={'Giriş Yap'}></Button>
-      <View style={{flex: 0, justifyContent: 'flex-end', marginTop: 60}}>
-        <HStack style={{margin: 20}}>
-          <Text style={{color: '#717D84'}}>Henüz hesabın yok mu? </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text              
+      <View style={{ flex: 0, justifyContent: 'flex-end', marginTop: 60 }}>
+        <HStack style={{ margin: 20 }}>
+          <Text style={{ color: '#717D84' }}>Henüz hesabın yok mu? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text
               style={{
                 color: '#717D84',
                 fontStyle: 'italic',

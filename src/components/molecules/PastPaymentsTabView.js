@@ -18,18 +18,18 @@ import {
   Stack,
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 
-import { totalPayment, getOwnerName } from '../../utils/helpers';
-import { AuthContext } from '../../utils/AuthContext';
-import * as PeriodAction from '../../store/Actions/period/PeriodAction';
-import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
 } from '../../styles/metrics';
+import { AuthContext } from '../../utils/AuthContext';
+import { totalPayment, getOwnerName } from '../../utils/helpers';
+import * as PeriodAction from '../../store/Actions/period/PeriodAction';
+import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 
 const PastPaymentsTabView = ({ allPayments, users, me, orgID }) => {
   const [index, setIndex] = React.useState(0);
@@ -47,7 +47,7 @@ const PastPaymentsTabView = ({ allPayments, users, me, orgID }) => {
       getOwnPastDebts: { debtData, debtLoading, debtError },
       getAllPastPaymentsByPerID: {
         allPastPaymentsByPerIDData,
-      allPastPaymentsByPerIDLoading,  
+        allPastPaymentsByPerIDLoading,
         allPastPaymentsByPerIDError,
       },
     },

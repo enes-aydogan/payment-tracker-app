@@ -1,27 +1,33 @@
-import React, {useContext} from 'react';
-import {SafeAreaView} from 'react-native';
-import {Button} from '@react-native-material/core';
-import {useDispatch} from 'react-redux';
+import React, { useContext } from 'react';
+import { SafeAreaView } from 'react-native';
+import { Button } from '@react-native-material/core';
+import { useDispatch } from 'react-redux';
 
 import * as AuthAction from '../../store/Actions/auth/AuthAction';
-import {AuthContext} from '../../utils/AuthContext';
+import { AuthContext } from '../../utils/AuthContext';
 
 const AboutScreen = () => {
-  const authContext = useContext(AuthContext);
-  const dispatch = useDispatch();
+  const {
+    authDispatch,
+    authState: {},
+  } = useContext(AuthContext);
 
-  const logout = async () => {
+  /*   const logout = async () => {
     dispatch(AuthAction.logOut('asd'));
     authContext.setAuthState({
       accessToken: null,
       authenticated: false,
     });
+  }; */
+
+  const logout = () => {
+    AuthAction.logOut()(authDispatch);
   };
 
   return (
     <SafeAreaView>
       <Button
-        onPress={() => authContext.logout()}
+        onPress={() => logout()}
         color="#717D84"
         variant="outlined"
         title="Logout"

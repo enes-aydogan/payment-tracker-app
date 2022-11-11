@@ -4,7 +4,10 @@ import * as AuthActionType from './AuthActionType';
 import authService from '../../../services/authService';
 
 export const logIn = user => dispatch => {
-  return authService
+  dispatch({
+    type: AuthActionType.LOGIN_LOADING,
+  });
+  authService
     .logIn(user)
     .then(response => {
       if (response.data.success) {
@@ -18,7 +21,7 @@ export const logIn = user => dispatch => {
           }),
         );
         dispatch({
-          type: AuthActionType.LOGIN,
+          type: AuthActionType.LOGIN_SUCCESS,
           payload: {
             access_token: response.data.data.token,
             user: {
@@ -28,12 +31,31 @@ export const logIn = user => dispatch => {
             },
           },
         });
-        return response;
       }
     })
     .catch(error => {
-      console.log('error', error);
+      console.log(error);
+      dispatch({
+        type: AuthActionType.LOGIN_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
+};
+
+export const setAuthState = data => dispatch => {
+  dispatch({
+    type: AuthActionType.LOGIN_SUCCESS,
+    payload: {
+      access_token: data.access_token,
+      user: {
+        id: data.user.id,
+        mail: data.user.mail,
+        password: data.user.password,
+      },
+    },
+  });
 };
 
 export const logOut = user => dispatch => {
@@ -44,25 +66,6 @@ export const logOut = user => dispatch => {
       });
     }
   });
-};
-
-export const getMe = _ => dispatch => {
-  return authService
-    .getMe()
-    .then(response => {
-      if (response.data.success) {
-        dispatch({
-          type: AuthActionType.GET_ME,
-          payload: {
-            data: response.data.data,
-          },
-        });
-        return response.data;
-      }
-    })
-    .catch(error => {
-      console.log('error', error);
-    });
 };
 
 export const register = user => dispatch => {

@@ -165,7 +165,7 @@ export default paymentReducer = (state, action) => {
           allPastPaymentsLoading: false,
         },
       };
-    case PaymentActionType.GET_ALL_PAST_PAYMENTS_ERROR:
+    case PaymentActionType.GET_ALL_PAST_PAYMENTS_FAIL:
       return {
         ...state,
         getAllPastPayments: {

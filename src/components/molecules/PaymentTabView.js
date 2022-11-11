@@ -17,19 +17,18 @@ import {
   Divider,
   Stack,
 } from '@react-native-material/core';
-import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
 } from '../../styles/metrics';
 import { AuthContext } from '../../utils/AuthContext';
-import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
-import * as UserAction from '../../store/Actions/user/UserAction';
-import * as OrgAction from '../../store/Actions/organization/OrgAction';
 import { totalPayment, getOwnerName } from '../../utils/helpers';
+import * as OrgAction from '../../store/Actions/organization/OrgAction';
+import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 
 const PaymentTabView = ({ allPayments, users, me, orgID }) => {
   const [index, setIndex] = React.useState(0);

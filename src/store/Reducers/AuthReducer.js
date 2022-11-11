@@ -1,31 +1,49 @@
 import * as AuthActionType from '../Actions/auth/AuthActionType';
-
-function getInitialState() {
-  return {
-    isLoggedIn: false,
-    user: null,
-  };
-}
+import authInitialState from './InitialStates/AuthInitialState';
 
 export default authReducer = (state, action) => {
   if (state == null) {
-    state = getInitialState();
+    state = authInitialState;
   }
 
   const { type, payload } = action;
   switch (type) {
-    case AuthActionType.LOGIN:
+    case AuthActionType.LOGIN_LOADING:
+      return {
+        ...state,
+        isLoggedIn: false,
+        authError: null,
+        authLoading: true,
+      };
+    case AuthActionType.LOGIN_SUCCESS:
       return {
         ...state,
         isLoggedIn: true,
-        user: payload.user,
-        acces_token: payload.acces_token,
+        authData: payload,
+        authError: null,
+        authLoading: false,
+      };
+    case AuthActionType.LOGIN_FAIL:
+      return {
+        ...state,
+        isLoggedIn: false,
+        authError: payload,
+        authLoading: false,
       };
     case AuthActionType.LOGOUT:
       return {
         ...state,
         isLoggedIn: false,
-        user: null,
+        authData: null,
+        authError: null,
+        authLoading: false,
+      };
+    case AuthActionType.CLEAR_STATE:
+      return {
+        isLoggedIn: false,
+        authData: null,
+        authError: null,
+        authLoading: false,
       };
     default:
       return state;
