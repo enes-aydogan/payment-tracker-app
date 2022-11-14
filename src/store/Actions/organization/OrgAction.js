@@ -28,22 +28,30 @@ export const getAllOrgs = _ => dispatch => {
     });
 };
 
-export const addUserToOrg = orgUser => dispatch => {
-  return organizationSerivce
+export const addUserToOrg = orgUser => dispatch => onSuccess => {
+  dispatch({
+    type: OrgActionType.ADD_USER_TO_ORG_LOADING,
+  });
+  organizationSerivce
     .addUserToOrg(orgUser)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: OrgActionType.ADD_USER_TO_ORG,
+          type: OrgActionType.ADD_USER_TO_ORG_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
+        onSuccess(response.data);
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: OrgActionType.ADD_USER_TO_ORG_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 

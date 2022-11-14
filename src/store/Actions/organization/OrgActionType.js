@@ -1,4 +1,8 @@
+// add user to organization
 export const ADD_USER_TO_ORG = 'ADD_USER_TO_ORG';
+export const ADD_USER_TO_ORG_LOADING = 'ADD_USER_TO_ORG_LOADING';
+export const ADD_USER_TO_ORG_SUCCESS = 'ADD_USER_TO_ORG_SUCCESS';
+export const ADD_USER_TO_ORG_FAIL = 'ADD_USER_TO_ORG_FAIL';
 
 // get users by orgID
 export const GET_USERS_BY_ORGID = 'GET_USERS_BY_ORGID';

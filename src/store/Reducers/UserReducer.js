@@ -62,6 +62,34 @@ export default userReducer = (state, action) => {
           getMeError: payload,
         },
       };
+    case UserActionType.IS_USER_EXIST_LOADING:
+      return {
+        ...state,
+        getIsUserExist: {
+          ...state.getIsUserExist,
+          isUserExistLoading: true,
+          isUserExistError: null,
+        },
+      };
+    case UserActionType.IS_USER_EXIST_SUCCESS:
+      return {
+        ...state,
+        getIsUserExist: {
+          ...state.getIsUserExist,
+          isUserExistData: payload,
+          isUserExistError: null,
+          isUserExistLoading: false,
+        },
+      };
+    case UserActionType.IS_USER_EXIST_FAIL:
+      return {
+        ...state,
+        getIsUserExist: {
+          ...state.getIsUserExist,
+          isUserExistError: payload,
+          isUserExistLoading: false,
+        },
+      };
     default:
       return state;
   }

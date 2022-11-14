@@ -1,5 +1,5 @@
-import { View, Alert } from 'react-native';
-import React, { useState } from 'react';
+import { View, Alert, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useContext, useState } from 'react';
 import {
   TextInput,
   Button,
@@ -13,15 +13,33 @@ import MultiSelect from 'react-native-multiple-select';
 
 import store from '../../store/store';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
+import { AuthContext } from '../../utils/AuthContext';
 
-const PaymentScreen = ({ route }) => {
+const PaymentScreen = ({ route, navigation }) => {
   const { item } = route.params;
   const [price, setPrice] = useState();
   const [description, setDescription] = useState();
   const [selectedItems, setSelectedItems] = useState([]);
 
+  const {
+    paymentDispatch,
+    paymentState: {
+      createPayment: {
+        createPaymentData,
+        createPaymentError,
+        createPaymentLoading,
+      },
+    },
+  } = useContext(AuthContext);
+
   const onSelectedItemsChange = selectedItems => {
     setSelectedItems(selectedItems);
+  };
+
+  const clearForm = _ => {
+    setPrice('');
+    setDescription('');
+    setSelectedItems([]);
   };
 
   const payment = async () => {
@@ -31,17 +49,26 @@ const PaymentScreen = ({ route }) => {
       stuffIDs: selectedItems.join(','),
     };
 
-    store.dispatch(PaymentAction.create(payment, item.orgID)).then(res => {
-      if (res && res.success) {
-        Alert.alert('Başarılı', 'Harcama başarıyla kayıt edilmiştir.');
+    PaymentAction.create(payment, item.orgID)(paymentDispatch)(res => {
+      console.log('workss');
+      console.log('res => ', res);
+      if (res.success) {
+        Alert.alert('Başarılı', 'Harcama başarıyla kayıt edilmiştir.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
       } else {
-        Alert.alert('Hata', 'Harcama kayıt işlemi başarısız olmuştur.');
+        Alert.alert('Hata', 'Harcama kayıt işlemi başarısız olmuştur.', [
+          {
+            text: 'OK',
+            onPress: () => clearForm(),
+          },
+        ]);
       }
     });
   };
 
   return (
-    <View style={{}}>
+    <View>
       <Surface elevation={2} style={{ margin: 12, borderRadius: 10 }}>
         <VStack spacing={2} style={{ margin: 20, marginTop: 30 }}>
           <TextInput
@@ -94,9 +121,29 @@ const PaymentScreen = ({ route }) => {
         onPress={() => payment()}
         color="#717D84"
         variant="outlined"
-        title={'Harcamayı Kaydet'}></Button>
+        title={'Harcamayı Kaydet'}
+        loading={createPaymentLoading}
+        disabled={createPaymentLoading}
+      />
     </View>
   );
 };
 
 export default PaymentScreen;
+
+const styles = StyleSheet.create({
+  title: {
+    marginLeft: 10,
+    fontSize: 20,
+  },
+  spinner: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+});

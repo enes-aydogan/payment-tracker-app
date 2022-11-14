@@ -2,22 +2,30 @@ import * as UserActionType from './UserActionType';
 import userService from '../../../services/userService';
 import authService from '../../../services/authService';
 
-export const isUserExist = mail => dispatch => {
-  return userService
+export const isUserExist = mail => dispatch => onSuccess => {
+  dispatch({
+    type: UserActionType.IS_USER_EXIST_LOADING,
+  });
+  userService
     .isUserExist(mail)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: UserActionType.IS_USER_EXIST,
+          type: UserActionType.IS_USER_EXIST_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
+        onSuccess(response.data);
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: UserActionType.IS_USER_EXIST_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 

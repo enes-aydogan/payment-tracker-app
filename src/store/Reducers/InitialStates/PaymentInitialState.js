@@ -4,6 +4,11 @@ export default {
     error: null,
     loading: false,
   },
+  createPayment: {
+    createPaymentData: [],
+    createPaymentError: null,
+    createPaymentLoading: false,
+  },
   getOwnPayments: {
     paymentData: [],
     paymentError: null,

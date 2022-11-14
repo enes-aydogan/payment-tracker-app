@@ -1,5 +1,5 @@
-import {View, Dimensions, ScrollView, FlatList, Alert} from 'react-native';
-import React, {useState} from 'react';
+import { View, Dimensions, ScrollView, FlatList, Alert } from 'react-native';
+import React, { useState, useContext } from 'react';
 import {
   Button,
   Text,
@@ -20,6 +20,7 @@ import store from '../../store/store';
 import * as UserAction from '../../store/Actions/user/UserAction';
 import * as OrgAction from '../../store/Actions/organization/OrgAction';
 import * as PeriodAction from '../../store/Actions/period/PeriodAction';
+import { AuthContext } from '../../utils/AuthContext';
 
 const OrganizationSetting = ({
   item,
@@ -30,14 +31,51 @@ const OrganizationSetting = ({
 }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
-  const [mail, setMail] = useState();
+  const [mail, setMail] = useState('bülent.demir@gmail.com');
   const [dialogMessage, setDialogMessage] = useState('');
   const [periodStatus, setPeriodStatus] = useState(
     item.orgID.periods.slice(-1)[0].status,
   );
 
+  const {
+    userDispatch,
+    userState: {
+      getIsUserExist: { isUserExistLoading, isUserExistError },
+    },
+    orgDispatch,
+    orgState: {
+      getAddUserToOrg: { addUserToOrgLoading, addUserToOrgError },
+    },
+  } = useContext(AuthContext);
+
   orgUser = () => {
-    store.dispatch(UserAction.isUserExist(mail)).then(res => {
+    UserAction.isUserExist(mail)(userDispatch)(res => {
+      console.log(res);
+      if (res.data) {
+        const orgUser = {
+          orgID: item.orgID._id,
+          userID: res.data,
+        };
+        OrgAction.addUserToOrg(orgUser)(orgDispatch)(response => {
+          // ==> response alamıyorum actiondan, service ten de actina bir response dönmüyor
+          if (response != null) {
+            setDialogVisible(false);
+            setDialogMessage('Kullanıcı başarıyla eklenmiştir!');
+            setErrorDialogVisible(true);
+          } else {
+            setDialogVisible(false);
+            setDialogMessage('Kullanıcı bu organizasyonda kayıtlı!');
+            setErrorDialogVisible(true);
+          }
+        });
+      } else {
+        setDialogVisible(false);
+        setDialogMessage('Bu mail ile bir kullanıcı bulunmamaktadır!');
+        setErrorDialogVisible(true);
+      }
+    });
+
+    /* store.dispatch(UserAction.isUserExist(mail)).then(res => {
       if (res.data) {
         const orgUser = {
           orgID: item.orgID._id,
@@ -59,7 +97,7 @@ const OrganizationSetting = ({
         setDialogMessage('Bu mail ile bir kullanıcı bulunmamaktadır!');
         setErrorDialogVisible(true);
       }
-    });
+    }); */
   };
 
   function renderUsers() {
@@ -108,25 +146,26 @@ const OrganizationSetting = ({
       <VStack spacing={5}>
         <Surface
           elevation={2}
-          style={{margin: 12, borderRadius: 10, maxHeight: 320}}>
-          <Flex style={{margin: 15, marginTop: 20}}>
+          style={{ margin: 12, borderRadius: 10, maxHeight: 320 }}>
+          <Flex style={{ margin: 15, marginTop: 20 }}>
             <HStack spacing={5}>
               <Text variant="h7">{labelOrgname}</Text>
               <Text variant="h7">{item.orgID.name}</Text>
             </HStack>
-            <HStack spacing={80} style={{marginTop: 10, width: 220}}>
+            <HStack spacing={80} style={{ marginTop: 10, width: 220 }}>
               <Text variant="h7">{lablelAddress}</Text>
               <Text variant="h7">{item.orgID.address}</Text>
             </HStack>
-            <HStack spacing={75} style={{marginTop: 10, width: 320}}>
+            <HStack spacing={75} style={{ marginTop: 10, width: 320 }}>
               <Text variant="h7">Üyeler: </Text>
-              <VStack spacing={3} style={{maxHeight: 200}}>
+              <VStack spacing={3} style={{ maxHeight: 200 }}>
                 <FlatList
                   data={renderUsers()}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <Surface
-                      style={{backgroundColor: '#ecf0f1', borderRadius: 20}}>
-                      <Text style={{margin: 3, marginLeft: 3, marginRight: 3}}>
+                      style={{ backgroundColor: '#ecf0f1', borderRadius: 20 }}>
+                      <Text
+                        style={{ margin: 3, marginLeft: 3, marginRight: 3 }}>
                         {item}
                       </Text>
                     </Surface>
@@ -135,7 +174,7 @@ const OrganizationSetting = ({
               </VStack>
             </HStack>
             <Button
-              style={{margin: 40}}
+              style={{ margin: 40 }}
               onPress={() => setDialogVisible(true)}
               color="#717D84"
               variant="outlined"
@@ -145,8 +184,8 @@ const OrganizationSetting = ({
         </Surface>
         <Surface
           elevation={2}
-          style={{margin: 12, borderRadius: 10, maxHeight: 320}}>
-          <Flex style={{margin: 15, marginTop: 20}}>
+          style={{ margin: 12, borderRadius: 10, maxHeight: 320 }}>
+          <Flex style={{ margin: 15, marginTop: 20 }}>
             <VStack spacing={10}>
               <HStack spacing={77}>
                 <Text>Period: </Text>
@@ -171,7 +210,7 @@ const OrganizationSetting = ({
             <TextInput
               value={mail}
               onChangeText={text => setMail(text)}
-              style={{marginTop: 10}}
+              style={{ marginTop: 10 }}
               color="#717D84"
               label="Email"
               variant="standard"

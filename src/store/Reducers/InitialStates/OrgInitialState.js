@@ -7,6 +7,11 @@ export default {
   getUsersByOrgID: {
     usersData: [],
     usersError: null,
-    usersLoading: false
-  }
+    usersLoading: false,
+  },
+  getAddUserToOrg: {
+    addUserToOrgData: [],
+    addUserToOrgError: null,
+    addUserToOrgLoading: false,
+  },
 };

@@ -75,6 +75,34 @@ export default orgReducer = (state, action) => {
           usersError: payload,
         },
       };
+    case OrgActionType.ADD_USER_TO_ORG_LOADING:
+      return {
+        ...state,
+        getAddUserToOrg: {
+          ...state.getAddUserToOrg,
+          addUserToOrgLoading: true,
+          addUserToOrgError: null,
+        },
+      };
+    case OrgActionType.ADD_USER_TO_ORG_SUCCESS:
+      return {
+        ...state,
+        getAddUserToOrg: {
+          ...state.getAddUserToOrg,
+          addUserToOrgData: payload,
+          addUserToOrgError: null,
+          addUserToOrgLoading: false,
+        },
+      };
+    case OrgActionType.ADD_USER_TO_ORG_FAIL:
+      return {
+        ...state,
+        getAddUserToOrg: {
+          ...state.getAddUserToOrg,
+          addUserToOrgError: payload,
+          addUserToOrgLoading: false,
+        },
+      };
     default:
       return state;
   }

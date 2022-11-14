@@ -9,4 +9,9 @@ export default {
     getMeError: null,
     getMeLoading: false,
   },
+  getIsUserExist: {
+    isUserExistData: [],
+    isUserExistError: null,
+    isUserExistLoading: false,
+  },
 };

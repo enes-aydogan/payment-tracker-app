@@ -1,4 +1,8 @@
+// creat payment
 export const CREATE = 'CREATE';
+export const CREATE_PAYMENT_LOADING = 'CREATE_PAYMENT_LOADING';
+export const CREATE_PAYMENT_SUCCESS = 'CREATE_PAYMENT_SUCCESS';
+export const CREATE_PAYMENT_FAIL = 'CREATE_PAYMENT_FAIL';
 
 // get info
 export const GET_INFO = 'GET_INFO';

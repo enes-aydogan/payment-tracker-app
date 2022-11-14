@@ -6,6 +6,31 @@ export default paymentReducer = (state, action) => {
 
   const { type, payload } = action;
   switch (type) {
+    case PaymentActionType.CREATE_PAYMENT_LOADING:
+      return {
+        ...state,
+        createPayment: {
+          createPaymentLoading: true,
+          createPaymentError: null,
+        },
+      };
+    case PaymentActionType.CREATE_PAYMENT_SUCCESS:
+      return {
+        ...state,
+        createPayment: {
+          createPaymentData: payload,
+          createPaymentLoading: false,
+          createPaymentError: null,
+        },
+      };
+    case PaymentActionType.CREATE_PAYMENT_FAIL:
+      return {
+        ...state,
+        createPayment: {
+          createPaymentLoading: false,
+          createPaymentError: payload,
+        },
+      };
     case PaymentActionType.GET_INFO_LOADING:
       return {
         ...state,

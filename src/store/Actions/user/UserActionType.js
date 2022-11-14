@@ -1,4 +1,9 @@
+// is user exist
 export const IS_USER_EXIST = 'IS_USER_EXIST';
+export const IS_USER_EXIST_LOADING = 'IS_USER_EXIST_LOADING';
+export const IS_USER_EXIST_SUCCESS = 'IS_USER_EXIST_SUCCESS';
+export const IS_USER_EXIST_FAIL = 'IS_USER_EXIST_FAIL';
+
 export const GET_USER_BY_ID = 'GET_USER_BY_ID';
 
 // get user info

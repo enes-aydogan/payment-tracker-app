@@ -1,22 +1,30 @@
 import paymentService from '../../../services/paymentService';
 import * as PaymentActionType from './PaymentActionType';
 
-export const create = (payment, orgID) => dispatch => {
-  return paymentService
+export const create = (payment, orgID) => dispatch => onSuccess => {
+  dispatch({
+    type: PaymentActionType.CREATE_PAYMENT_LOADING,
+  });
+  paymentService
     .create(payment, orgID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PaymentActionType.CREATE,
+          type: PaymentActionType.CREATE_PAYMENT_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
+        onSuccess(response.data);
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PaymentActionType.CREATE_PAYMENT_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 
