@@ -1,22 +1,30 @@
 import * as PeriodActionType from './PeriodActionType';
 import periodService from '../../../services/periodService';
 
-export const finalizePeriod = orgID => dispatch => {
-  return periodService
+export const finalizePeriod = orgID => dispatch => onSuccess => {
+  dispatch({
+    type: PeriodActionType.FINALIZE_PERIOD_LOADING,
+  });
+  periodService
     .finalizePeriod(orgID)
     .then(response => {
       if (response.data.success) {
         dispatch({
-          type: PeriodActionType.FINALIZE_PERIOD,
+          type: PeriodActionType.FINALIZE_PERIOD_SUCCESS,
           payload: {
             data: response.data.data,
           },
         });
-        return response.data;
+        onSuccess(response.data);
       }
     })
     .catch(error => {
-      console.log('error', error);
+      dispatch({
+        type: PeriodActionType.FINALIZE_PERIOD_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
     });
 };
 

@@ -3,11 +3,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { navigationRef } from '../utils/RootNavigation';
+
 import AppNavigator from './app-navigator';
 import LoginScreen from '../scenes/auth/login';
 import RegisterScreen from '../scenes/auth/register';
-import LogoutScreen from '../scenes/auth/logout';
 import { AuthProvider, AuthContext } from '../utils/AuthContext';
 import * as AuthAction from '../store/Actions/auth/AuthAction';
 const Stack = createNativeStackNavigator();
@@ -40,30 +39,32 @@ const AuthStack = () => {
   }, [isLoggedIn]);
 
   return (
-    <Stack.Navigator>
-      {isLoggedIn ? (
-        <Stack.Group>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {isLoggedIn ? (
           <Stack.Screen
             name="App"
             component={AppNavigator}
             options={{ headerShown: false }}
           />
-        </Stack.Group>
-      ) : (
-        <Stack.Group>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-        </Stack.Group>
-      )}
-    </Stack.Navigator>
+        ) : (
+          <Stack.Group>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </Stack.Group>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
 const NavigationProvider = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <AuthStack />
-    </NavigationContainer>
+    <Provider>
+      <AuthProvider>
+        <AuthStack />
+      </AuthProvider>
+    </Provider>
   );
 };
 

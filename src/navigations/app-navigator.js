@@ -3,9 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import AboutScreen from '../scenes/about';
 import StartOrgNavigator from './start-org-navigator';
-import ListOrganizationsScreen from '../scenes/home/organization/organization_list';
 import OrgProcessNavigator from './org-process-navigator';
-import LogoutScreen from '../scenes/auth/logout';
+
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = ({}) => {
@@ -18,15 +17,28 @@ const AppNavigator = ({}) => {
           let rn = route.name;
 
           if (rn === 'Start') {
-            iconName = focused ? 'home' : 'home';
+            iconName = focused ? 'home' : 'home-outline';
+            color = focused ? 'black' : '';
           } else if (rn === 'About') {
-            iconName = focused ? 'person-outline' : 'person-outline';
+            iconName = focused ? 'person' : 'person-outline';
+            color = focused ? 'black' : '';
           } else if (rn == 'My Houses') {
-            iconName = focused ? 'grid-outline' : 'grid-outline';
+            iconName = focused ? 'grid' : 'grid-outline';
+            color = focused ? 'black' : '';
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return (
+            <Icon
+              name={iconName}
+              size={size}
+              color={color}
+              style={{ marginTop: 10 }}
+            />
+          );
         },
+        tabBarInactiveTintColor: 'black',
+        tabBarActiveTintColor: 'black',
+        tabBarStyle: { height: 90 },
       })}>
       <Tab.Group>
         <Tab.Screen

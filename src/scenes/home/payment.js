@@ -1,4 +1,4 @@
-import { View, Alert, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Alert, StyleSheet } from 'react-native';
 import React, { useContext, useState } from 'react';
 import {
   TextInput,
@@ -7,6 +7,7 @@ import {
   VStack,
   Surface,
   Flex,
+  ActivityIndicator,
 } from '@react-native-material/core';
 
 import MultiSelect from 'react-native-multiple-select';
@@ -50,8 +51,6 @@ const PaymentScreen = ({ route, navigation }) => {
     };
 
     PaymentAction.create(payment, item.orgID)(paymentDispatch)(res => {
-      console.log('workss');
-      console.log('res => ', res);
       if (res.success) {
         Alert.alert('Başarılı', 'Harcama başarıyla kayıt edilmiştir.', [
           { text: 'OK', onPress: () => navigation.goBack() },

@@ -1,4 +1,4 @@
-import { View, Dimensions, ScrollView, FlatList, Alert } from 'react-native';
+import { Dimensions, FlatList, Alert } from 'react-native';
 import React, { useState, useContext } from 'react';
 import {
   Button,
@@ -16,22 +16,15 @@ import {
   Switch,
 } from '@react-native-material/core';
 
-import store from '../../store/store';
+import { AuthContext } from '../../utils/AuthContext';
 import * as UserAction from '../../store/Actions/user/UserAction';
 import * as OrgAction from '../../store/Actions/organization/OrgAction';
 import * as PeriodAction from '../../store/Actions/period/PeriodAction';
-import { AuthContext } from '../../utils/AuthContext';
 
-const OrganizationSetting = ({
-  item,
-  users,
-  buttonTitle,
-  labelOrgname,
-  lablelAddress,
-}) => {
+const OrganizationSetting = ({ item, users, labelOrgname, lablelAddress }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
-  const [mail, setMail] = useState('bülent.demir@gmail.com');
+  const [mail, setMail] = useState();
   const [dialogMessage, setDialogMessage] = useState('');
   const [periodStatus, setPeriodStatus] = useState(
     item.orgID.periods.slice(-1)[0].status,
@@ -46,6 +39,10 @@ const OrganizationSetting = ({
     orgState: {
       getAddUserToOrg: { addUserToOrgLoading, addUserToOrgError },
     },
+    periodDispatch,
+    periodState: {
+      getFinalizePeriod: { finalizePeriodLoading, finalizePeriodError },
+    },
   } = useContext(AuthContext);
 
   orgUser = () => {
@@ -56,8 +53,7 @@ const OrganizationSetting = ({
           userID: res.data,
         };
         OrgAction.addUserToOrg(orgUser)(orgDispatch)(response => {
-          // ==> response alamıyorum actiondan, service ten de actina bir response dönmüyor
-          if (response != null) {
+          if (response.data.length >= 1) {
             setDialogVisible(false);
             setDialogMessage('Kullanıcı başarıyla eklenmiştir!');
             setErrorDialogVisible(true);
@@ -73,30 +69,6 @@ const OrganizationSetting = ({
         setErrorDialogVisible(true);
       }
     });
-
-    /* store.dispatch(UserAction.isUserExist(mail)).then(res => {
-      if (res.data) {
-        const orgUser = {
-          orgID: item.orgID._id,
-          userID: res.data,
-        };
-        store.dispatch(OrgAction.addUserToOrg(orgUser)).then(res => {
-          if (res != null) {
-            setDialogVisible(false);
-            setDialogMessage('Kullanıcı başarıyla eklenmiştir!');
-            setErrorDialogVisible(true);
-          } else {
-            setDialogVisible(false);
-            setDialogMessage('Kullanıcı bu organizasyonda kayıtlı!');
-            setErrorDialogVisible(true);
-          }
-        });
-      } else {
-        setDialogVisible(false);
-        setDialogMessage('Bu mail ile bir kullanıcı bulunmamaktadır!');
-        setErrorDialogVisible(true);
-      }
-    }); */
   };
 
   function renderUsers() {
@@ -118,17 +90,15 @@ const OrganizationSetting = ({
       {
         text: 'Evet',
         onPress: () => {
-          store
-            .dispatch(PeriodAction.finalizePeriod(item.orgID._id))
-            .then(res => {
-              if (res) {
-                setPeriodStatus(!periodStatus);
-                Alert.alert(
-                  'Başarılı!',
-                  'Period başarıyla sonlandırılmıştır, harcama kaydetebilmek için yeni bir period oluşturunuz.',
-                );
-              }
-            });
+          PeriodAction.finalizePeriod(item.orgID._id)(periodDispatch)(res => {
+            if (res) {
+              setPeriodStatus(!periodStatus);
+              Alert.alert(
+                'Başarılı!',
+                'Period başarıyla sonlandırılmıştır, harcama kaydetebilmek için yeni bir period oluşturunuz.',
+              );
+            }
+          });
         },
       },
     ]);
@@ -230,10 +200,13 @@ const OrganizationSetting = ({
             compact
             color="#717D84"
             variant="text"
+            loading={addUserToOrgLoading}
+            disabled={addUserToOrgLoading}
             onPress={() => orgUser()}
           />
         </DialogActions>
       </Dialog>
+
       <Dialog
         visible={errorDialogVisible}
         onDismiss={() => setErrorDialogVisible(false)}>
@@ -254,24 +227,3 @@ const OrganizationSetting = ({
   );
 };
 export default OrganizationSetting;
-/**
- * <HStack spacing={5}>
-        <Text variant="h7">{labelOrgname}</Text>
-        <Text variant="h7">{item.orgID.name}</Text>
-      </HStack>
-      <HStack spacing={80} style={{marginTop: 10, width: 250}}>
-        <Text variant="h7">{lablelAddress}</Text>
-        <Text variant="h7">{item.orgID.address}</Text>
-      </HStack>
-      <HStack spacing={75} style={{marginTop: 10, width: 250}}>
-        <Text variant="h7">Üyeler: </Text>
-        <View>{renderUsers()}</View>
-      </HStack>
-      <Button
-        style={{margin: 40}}
-        onPress={() => setDialogVisible(true)}
-        color="#717D84"
-        variant="outlined"
-        title={buttonTitle}
-      />
- */

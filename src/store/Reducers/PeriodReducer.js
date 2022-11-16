@@ -36,6 +36,33 @@ export default periodReducer = (state, action) => {
           summaryError: payload,
         },
       };
+    case PeriodActionType.FINALIZE_PERIOD_LOADING:
+      return {
+        ...state,
+        getFinalizePeriod: {
+          ...state.getFinalizePeriod,
+          finalizePeriodLoading: true,
+          finalizePeriodError: null,
+        },
+      };
+    case PeriodActionType.FINALIZE_PERIOD_SUCCESS:
+      return {
+        ...state,
+        getFinalizePeriod: {
+          ...state.getFinalizePeriod,
+          finalizePeriodData: payload,
+          finalizePeriodError: null,
+          finalizePeriodLoading: false,
+        },
+      };
+    case PeriodActionType.FINALIZE_PERIOD_FAIL:
+      return {
+        ...state,
+        getFinalizePeriod: {
+          finalizePeriodError: payload,
+          finalizePeriodLoading: false,
+        },
+      };
     default:
       return state;
   }
