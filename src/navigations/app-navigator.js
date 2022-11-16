@@ -1,19 +1,19 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AboutScreen from '../scenes/about';
 import StartOrgNavigator from './start-org-navigator';
 import ListOrganizationsScreen from '../scenes/home/organization/organization_list';
 import OrgProcessNavigator from './org-process-navigator';
-
+import LogoutScreen from '../scenes/auth/logout';
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = ({}) => {
   return (
     <Tab.Navigator
       initialRouteName={'Start'}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let rn = route.name;
 
@@ -32,12 +32,12 @@ const AppNavigator = ({}) => {
         <Tab.Screen
           name="Start"
           component={StartOrgNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Tab.Screen
           name="My Houses"
           component={OrgProcessNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Tab.Screen name="About" component={AboutScreen} />
       </Tab.Group>

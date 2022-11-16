@@ -1,8 +1,9 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as RootNavigation from '../utils/RootNavigation';
 
 const instance = axios.create({
-  baseURL: 'https://trackingapi-nodejs.herokuapp.com/api/v1',
+  baseURL: 'http://localhost:3000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -22,15 +23,12 @@ instance.interceptors.request.use(
   },
 );
 
-/* instance.interceptors.response.use(
-  response => {
+instance.interceptors.response.use(
+  response =>
     new Promise((resolve, reject) => {
       resolve(response);
-    });
-  },
-
+    }),
   error => {
-    
     if (!error.response) {
       return new Promise((resolve, reject) => {
         reject(error);
@@ -38,13 +36,13 @@ instance.interceptors.request.use(
     }
 
     if (error.response.status === 401) {
-      navigate(LOGOUT);
+      RootNavigation.navigate('LogoutScreen');
     } else {
       return new Promise((resolve, reject) => {
         reject(error);
       });
     }
   },
-); */
+);
 
 export default instance;

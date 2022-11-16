@@ -50,7 +50,6 @@ const OrganizationSetting = ({
 
   orgUser = () => {
     UserAction.isUserExist(mail)(userDispatch)(res => {
-      console.log(res);
       if (res.data) {
         const orgUser = {
           orgID: item.orgID._id,
