@@ -16,6 +16,11 @@ import {
   Switch,
 } from '@react-native-material/core';
 
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '../../styles/metrics';
 import { AuthContext } from '../../utils/AuthContext';
 import * as UserAction from '../../store/Actions/user/UserAction';
 import * as OrgAction from '../../store/Actions/organization/OrgAction';
@@ -107,34 +112,56 @@ const OrganizationSetting = ({ item, users, labelOrgname, lablelAddress }) => {
   return (
     <Flex
       style={{
-        margin: 3,
-        marginTop: 3,
+        margin: moderateScale(3),
+        marginTop: verticalScale(3),
         backgroundColor: '#ecf0f1',
         height: Dimensions.get('window').height,
       }}>
       <VStack spacing={5}>
         <Surface
           elevation={2}
-          style={{ margin: 12, borderRadius: 10, maxHeight: 320 }}>
-          <Flex style={{ margin: 15, marginTop: 20 }}>
+          style={{
+            margin: moderateScale(12),
+            borderRadius: moderateScale(10),
+            maxHeight: verticalScale(320),
+          }}>
+          <Flex
+            style={{ margin: moderateScale(15), marginTop: verticalScale(20) }}>
             <HStack spacing={5}>
               <Text variant="h7">{labelOrgname}</Text>
               <Text variant="h7">{item.orgID.name}</Text>
             </HStack>
-            <HStack spacing={80} style={{ marginTop: 10, width: 220 }}>
+            <HStack
+              spacing={80}
+              style={{
+                marginTop: verticalScale(10),
+                width: horizontalScale(220),
+              }}>
               <Text variant="h7">{lablelAddress}</Text>
               <Text variant="h7">{item.orgID.address}</Text>
             </HStack>
-            <HStack spacing={75} style={{ marginTop: 10, width: 320 }}>
+            <HStack
+              spacing={75}
+              style={{
+                marginTop: verticalScale(10),
+                width: horizontalScale(320),
+              }}>
               <Text variant="h7">Üyeler: </Text>
-              <VStack spacing={3} style={{ maxHeight: 200 }}>
+              <VStack spacing={3} style={{ maxHeight: verticalScale(320) }}>
                 <FlatList
                   data={renderUsers()}
                   renderItem={({ item }) => (
                     <Surface
-                      style={{ backgroundColor: '#ecf0f1', borderRadius: 20 }}>
+                      style={{
+                        backgroundColor: '#ecf0f1',
+                        borderRadius: moderateScale(20),
+                      }}>
                       <Text
-                        style={{ margin: 3, marginLeft: 3, marginRight: 3 }}>
+                        style={{
+                          margin: moderateScale(3),
+                          marginLeft: horizontalScale(3),
+                          marginRight: horizontalScale(3),
+                        }}>
                         {item}
                       </Text>
                     </Surface>
@@ -143,7 +170,7 @@ const OrganizationSetting = ({ item, users, labelOrgname, lablelAddress }) => {
               </VStack>
             </HStack>
             <Button
-              style={{ margin: 40 }}
+              style={{ margin: moderateScale(40) }}
               onPress={() => setDialogVisible(true)}
               color="#717D84"
               variant="outlined"
@@ -153,8 +180,13 @@ const OrganizationSetting = ({ item, users, labelOrgname, lablelAddress }) => {
         </Surface>
         <Surface
           elevation={2}
-          style={{ margin: 12, borderRadius: 10, maxHeight: 320 }}>
-          <Flex style={{ margin: 15, marginTop: 20 }}>
+          style={{
+            margin: moderateScale(12),
+            borderRadius: moderateScale(10),
+            maxHeight: verticalScale(320),
+          }}>
+          <Flex
+            style={{ margin: moderateScale(15), marginTop: verticalScale(20) }}>
             <VStack spacing={10}>
               <HStack spacing={77}>
                 <Text>Period: </Text>
@@ -179,7 +211,7 @@ const OrganizationSetting = ({ item, users, labelOrgname, lablelAddress }) => {
             <TextInput
               value={mail}
               onChangeText={text => setMail(text)}
-              style={{ marginTop: 10 }}
+              style={{ marginTop: verticalScale(10) }}
               color="#717D84"
               label="Email"
               variant="standard"

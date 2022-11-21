@@ -1,6 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../styles/metrics';
 import AboutScreen from '../scenes/about';
 import StartOrgNavigator from './start-org-navigator';
 import OrgProcessNavigator from './org-process-navigator';
@@ -20,7 +25,7 @@ const AppNavigator = ({}) => {
             iconName = focused ? 'home' : 'home-outline';
             color = focused ? 'black' : '';
           } else if (rn === 'About') {
-            iconName = focused ? 'person' : 'person-outline';
+            iconName = focused ? 'settings' : 'settings-outline';
             color = focused ? 'black' : '';
           } else if (rn == 'My Houses') {
             iconName = focused ? 'grid' : 'grid-outline';
@@ -32,13 +37,13 @@ const AppNavigator = ({}) => {
               name={iconName}
               size={size}
               color={color}
-              style={{ marginTop: 10 }}
+              style={{ marginTop: verticalScale(10) }}
             />
           );
         },
         tabBarInactiveTintColor: 'black',
         tabBarActiveTintColor: 'black',
-        tabBarStyle: { height: 90 },
+        tabBarStyle: { height: verticalScale(85) },
       })}>
       <Tab.Group>
         <Tab.Screen

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RootNavigation from '../utils/RootNavigation';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: 'https://trackingapi-nodejs.herokuapp.com/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },

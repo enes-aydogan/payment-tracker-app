@@ -9,10 +9,13 @@ import {
   Flex,
   ActivityIndicator,
 } from '@react-native-material/core';
-
 import MultiSelect from 'react-native-multiple-select';
 
-import store from '../../store/store';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../../styles/metrics';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 import { AuthContext } from '../../utils/AuthContext';
 
@@ -68,8 +71,12 @@ const PaymentScreen = ({ route, navigation }) => {
 
   return (
     <View>
-      <Surface elevation={2} style={{ margin: 12, borderRadius: 10 }}>
-        <VStack spacing={2} style={{ margin: 20, marginTop: 30 }}>
+      <Surface
+        elevation={2}
+        style={{ margin: moderateScale(12), borderRadius: moderateScale(10) }}>
+        <VStack
+          spacing={2}
+          style={{ margin: moderateScale(20), marginTop: verticalScale(30) }}>
           <TextInput
             color="#717D84"
             variant="filled"
@@ -82,7 +89,7 @@ const PaymentScreen = ({ route, navigation }) => {
             color="#717D84"
             variant="filled"
             label="Ücret"
-            style={{ marginTop: 20 }}
+            style={{ marginTop: verticalScale(20) }}
             value={price}
             onChangeText={text => setPrice(text)}
           />
@@ -90,11 +97,22 @@ const PaymentScreen = ({ route, navigation }) => {
       </Surface>
       <Surface
         elevation={2}
-        style={{ margin: 12, borderRadius: 10, minHeight: 225 }}>
+        style={{
+          margin: moderateScale(12),
+          borderRadius: moderateScale(10),
+          minHeight: horizontalScale(225),
+        }}>
         <Flex center>
-          <Text style={{ marginTop: 20, margin: 10 }}>Hesap Ortakları</Text>
+          <Text
+            style={{ marginTop: verticalScale(20), margin: moderateScale(10) }}>
+            Hesap Ortakları
+          </Text>
         </Flex>
-        <View style={{ margin: 10, borderRadius: 10 }}>
+        <View
+          style={{
+            margin: moderateScale(10),
+            borderRadius: moderateScale(10),
+          }}>
           <MultiSelect
             items={item.users}
             uniqueKey="userID"
@@ -116,7 +134,7 @@ const PaymentScreen = ({ route, navigation }) => {
         </View>
       </Surface>
       <Button
-        style={{ margin: 20 }}
+        style={{ margin: moderateScale(20) }}
         onPress={() => payment()}
         color="#717D84"
         variant="outlined"
@@ -132,8 +150,8 @@ export default PaymentScreen;
 
 const styles = StyleSheet.create({
   title: {
-    marginLeft: 10,
-    fontSize: 20,
+    marginLeft: horizontalScale(10),
+    fontSize: moderateScale(20),
   },
   spinner: {
     flex: 1,
@@ -143,6 +161,6 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: moderateScale(10),
   },
 });

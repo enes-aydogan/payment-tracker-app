@@ -9,6 +9,9 @@ import LoginScreen from '../scenes/auth/login';
 import RegisterScreen from '../scenes/auth/register';
 import { AuthProvider, AuthContext } from '../utils/AuthContext';
 import * as AuthAction from '../store/Actions/auth/AuthAction';
+import { navigationRef } from '../utils/RootNavigation';
+import LogoutScreen from '../scenes/auth/logout';
+
 const Stack = createNativeStackNavigator();
 
 const AuthStack = () => {
@@ -39,7 +42,7 @@ const AuthStack = () => {
   }, [isLoggedIn]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
         {isLoggedIn ? (
           <Stack.Screen
@@ -53,6 +56,7 @@ const AuthStack = () => {
             <Stack.Screen name="Register" component={RegisterScreen} />
           </Stack.Group>
         )}
+        <Stack.Screen name="LogoutScreen" component={LogoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

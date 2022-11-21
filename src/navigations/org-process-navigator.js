@@ -16,7 +16,6 @@ const OrgProcessNavigator = () => {
         component={OrganizationProcess}
       />
       <Stack.Screen name="PastPaymentList" component={PastPaymentList} />
-      <Stack.Screen name="LogoutScreen" component={LogoutScreen} />
     </Stack.Navigator>
   );
 };

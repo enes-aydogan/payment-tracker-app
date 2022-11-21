@@ -11,6 +11,11 @@ import { ListItem, Stack } from '@react-native-material/core';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../../../styles/metrics';
 import { AuthContext } from '../../../utils/AuthContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as OrgAction from '../../../store/Actions/organization/OrgAction';
@@ -37,7 +42,7 @@ const ListOrganizationsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
-        style={{ height: 676 }}
+        style={{ height: verticalScale(676) }}
         data={loading ? mockData : data.data}
         renderItem={({ item }) => (
           <View>
@@ -48,7 +53,7 @@ const ListOrganizationsScreen = ({ navigation }) => {
               LinearGradient={LinearGradient}>
               <ListItem
                 title={item.orgID.name}
-                leading={<Icon name="home-outline" size={22} />}
+                leading={<Icon name="home-outline" size={moderateScale(22)} />}
                 onPress={() =>
                   navigation.navigate('OrganizationProcess', { item: item })
                 }
@@ -68,15 +73,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     textAlign: 'center',
-    paddingTop: 30,
+    paddingTop: verticalScale(30),
     backgroundColor: '#ecf0f1',
-    padding: 8,
+    padding: moderateScale(8),
   },
   spinnerTextStyle: {
     color: '#FFF',
   },
   image: {
     width: Dimensions.get('screen').width,
-    height: 50,
+    height: verticalScale(50),
   },
 });

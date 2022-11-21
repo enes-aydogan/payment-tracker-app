@@ -15,6 +15,11 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../../../styles/metrics';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../../utils/AuthContext';
 import * as UserAction from '../../../store/Actions/user/UserAction';
@@ -129,9 +134,9 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     textAlign: 'center',
-    paddingTop: 30,
+    paddingTop: verticalScale(30),
     backgroundColor: '#ecf0f1',
-    padding: 8,
+    padding: moderateScale(8),
     height: Dimensions.get('window').height,
   },
   spinnerTextStyle: {
@@ -145,10 +150,10 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: moderateScale(10),
   },
   image: {
     width: Dimensions.get('screen').width,
-    height: 50,
+    height: verticalScale(50),
   },
 });

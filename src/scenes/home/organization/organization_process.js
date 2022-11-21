@@ -8,6 +8,11 @@ import {
 } from '@react-native-material/core';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../../../styles/metrics';
 import { AuthContext } from '../../../utils/AuthContext';
 import * as UserAction from '../../../store/Actions/user/UserAction';
 import PaymentTabView from '../../../components/molecules/PaymentTabView';
@@ -54,10 +59,13 @@ const OrganizationProcess = ({ route, navigation }) => {
       style={{ backgroundColor: '#FFFFFF' }}
       revealed={revealed}
       backLayer={
-        <View style={{ height: Dimensions.get('window').height + 100 }}>
+        <View
+          style={{
+            height: Dimensions.get('window').height + verticalScale(100),
+          }}>
           <View style={styles.pressable}>
             <Text style={styles.pressable_text}>
-              <Icon name="wallet-outline" size={22} /> Ödeme
+              <Icon name="wallet-outline" size={moderateScale(22)} /> Ödeme
             </Text>
           </View>
           <ListItem
@@ -72,7 +80,8 @@ const OrganizationProcess = ({ route, navigation }) => {
           />
           <View style={styles.pressable}>
             <Text style={styles.pressable_text}>
-              <Icon name="settings-outline" size={22} /> Ev Ayarları
+              <Icon name="settings-outline" size={moderateScale(22)} /> Ev
+              Ayarları
             </Text>
           </View>
           <ListItem
@@ -84,7 +93,7 @@ const OrganizationProcess = ({ route, navigation }) => {
       }>
       <BackdropSubheader
         title={item.orgID.name}
-        leading={<Icon name="home" size={22} />}
+        leading={<Icon name="home" size={moderateScale(22)} />}
         center
         trailing={props => (
           <Icon
@@ -130,17 +139,17 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: moderateScale(10),
   },
   pressable: {
-    margin: 5,
+    margin: moderateScale(5),
     backgroundColor: '#ecf0f1',
-    borderRadius: 20,
+    borderRadius: moderateScale(20),
     justifyContent: 'center',
-    height: 35,
+    height: verticalScale(35),
   },
   pressable_text: {
-    marginLeft: 10,
-    fontSize: 16,
+    marginLeft: horizontalScale(10),
+    fontSize: moderateScale(16),
   },
 });

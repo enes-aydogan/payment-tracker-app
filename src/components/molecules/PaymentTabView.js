@@ -87,8 +87,8 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
     <Stack>
       <VStack
         style={{
-          marginTop: 15,
-          height: Dimensions.get('window').height - 400,
+          marginTop: verticalScale(15),
+          height: Dimensions.get('window').height - verticalScale(400),
         }}>
         <FlatList
           data={
@@ -96,7 +96,7 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
               ? mockOwnPaymentData
               : activePeriodData.data
               ? activePeriodData.data[0].payments
-              : activePeriodData.data
+              : activePeriodData
           }
           renderItem={({ item }) => (
             <View>
@@ -113,18 +113,18 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                   <HStack center fill spacing={20}>
                     <Box
                       style={{
-                        marginLeft: 10,
-                        width: 100,
+                        marginLeft: horizontalScale(10),
+                        width: horizontalScale(100),
                       }}>
                       <Text>{new Date(item.date).toLocaleString()}</Text>
                     </Box>
-                    <Box style={{ width: 100 }}>
+                    <Box style={{ width: horizontalScale(100) }}>
                       <Text>{item.description}</Text>
                     </Box>
-                    <Box style={{ width: 55 }}>
+                    <Box style={{ width: horizontalScale(45) }}>
                       <Text>{item.price + ' ₺'}</Text>
                     </Box>
-                    <Box style={{ width: 25 }}>
+                    <Box style={{ width: horizontalScale(35) }}>
                       <Icon
                         name="eye-outline"
                         onPress={() =>
@@ -146,20 +146,27 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
           )}
         />
       </VStack>
-      <Divider style={{ marginTop: 20, margin: 50 }} />
+      <Divider
+        style={{ marginTop: verticalScale(20), margin: moderateScale(50) }}
+      />
       <VStack>
         <Surface
           style={{
             backgroundColor: '#ecf0f1',
-            margin: 10,
-            borderRadius: 20,
-            height: 50,
+            margin: moderateScale(10),
+            borderRadius: moderateScale(20),
+            height: verticalScale(50),
             justifyContent: 'center',
           }}>
           <HStack center spacing={140} style={{}}>
             <Text style={{ fontWeight: 'bold' }}>TOPLAM TUTAR: </Text>
             <Text style={{ fontWeight: 'bold' }}>
-              {totalPayment(allPayments[0].payments)} ₺
+              {activePeriodLoading
+                ? ''
+                : activePeriodData.data
+                ? totalPayment(activePeriodData.data[0].payments)
+                : ''}{' '}
+              ₺
             </Text>
           </HStack>
         </Surface>
@@ -172,8 +179,8 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
       <Stack>
         <VStack
           style={{
-            marginTop: 15,
-            height: Dimensions.get('window').height - 400,
+            marginTop: verticalScale(15),
+            height: Dimensions.get('window').height - verticalScale(400),
           }}>
           <FlatList
             data={
@@ -181,7 +188,7 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                 ? mockOwnPaymentData
                 : paymentData.data
                 ? paymentData.data.paymentList
-                : paymentData.data
+                : paymentData
             }
             renderItem={({ item }) => (
               <View>
@@ -198,18 +205,18 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                     <HStack center fill spacing={20}>
                       <Box
                         style={{
-                          marginLeft: 10,
-                          width: 100,
+                          marginLeft: horizontalScale(10),
+                          width: horizontalScale(100),
                         }}>
                         <Text>{new Date(item.date).toLocaleString()}</Text>
                       </Box>
-                      <Box style={{ width: 100 }}>
+                      <Box style={{ width: horizontalScale(100) }}>
                         <Text>{item.description}</Text>
                       </Box>
-                      <Box style={{ width: 55 }}>
+                      <Box style={{ width: horizontalScale(45) }}>
                         <Text>{item.price + ' ₺'}</Text>
                       </Box>
-                      <Box style={{ width: 25 }}>
+                      <Box style={{ width: horizontalScale(35) }}>
                         <Icon
                           name="eye-outline"
                           onPress={() =>
@@ -231,14 +238,16 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
             )}
           />
         </VStack>
-        <Divider style={{ marginTop: 20, margin: 50 }} />
+        <Divider
+          style={{ marginTop: verticalScale(20), margin: moderateScale(50) }}
+        />
         <VStack>
           <Surface
             style={{
               backgroundColor: '#ecf0f1',
-              margin: 10,
-              borderRadius: 20,
-              height: 50,
+              margin: moderateScale(10),
+              borderRadius: moderateScale(20),
+              height: verticalScale(50),
               justifyContent: 'center',
             }}>
             <HStack center spacing={140} style={{}}>
@@ -263,7 +272,7 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
       <VStack
         style={{
           marginTop: 15,
-          height: Dimensions.get('window').height - 400,
+          height: Dimensions.get('window').height - horizontalScale(400),
         }}>
         <FlatList
           data={debtLoading ? mockOwnPaymentData : debtData.data}
@@ -282,18 +291,18 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                   <HStack center fill spacing={20}>
                     <Box
                       style={{
-                        marginLeft: 10,
-                        width: 100,
+                        marginLeft: horizontalScale(10),
+                        width: horizontalScale(100),
                       }}>
                       <Text>{new Date(item.date).toLocaleString()}</Text>
                     </Box>
-                    <Box style={{ width: 100 }}>
+                    <Box style={{ width: horizontalScale(100) }}>
                       <Text>{item.description}</Text>
                     </Box>
-                    <Box style={{ width: 55 }}>
+                    <Box style={{ width: horizontalScale(45) }}>
                       <Text>{item.price + ' ₺'}</Text>
                     </Box>
-                    <Box style={{ width: 25 }}>
+                    <Box style={{ width: horizontalScale(35) }}>
                       <Icon
                         name="eye-outline"
                         onPress={() =>
@@ -315,14 +324,16 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
           )}
         />
       </VStack>
-      <Divider style={{ marginTop: 20, margin: 50 }} />
+      <Divider
+        style={{ marginTop: verticalScale(20), margin: moderateScale(50) }}
+      />
       <VStack>
         <Surface
           style={{
             backgroundColor: '#ecf0f1',
-            margin: 10,
-            borderRadius: 20,
-            height: 50,
+            margin: moderateScale(10),
+            borderRadius: moderateScale(20),
+            height: verticalScale(50),
             justifyContent: 'center',
           }}>
           <HStack center spacing={140} style={{}}>
@@ -361,7 +372,7 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
               <Text
                 style={{
                   color: 'black',
-                  margin: 8,
+                  margin: moderateScale(8),
                 }}>
                 {route.title}
               </Text>
@@ -378,7 +389,7 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
         <DialogHeader title={new Date(dialogData.date).toLocaleString()} />
         <DialogContent>
           <Flex>
-            <VStack spacing={5} style={{ maxHeight: 300 }}>
+            <VStack spacing={5} style={{ maxHeight: verticalScale(300) }}>
               <HStack spacing={20}>
                 <Text>Harcayan: </Text>
                 <Text>{getOwnerName(dialogData.ownerID, users, me)}</Text>
@@ -391,9 +402,9 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                 <Text>Tutar: </Text>
                 <Text>{dialogData.price} ₺</Text>
               </HStack>
-              <Divider style={{ marginTop: 7 }} />
+              <Divider style={{ marginTop: verticalScale(7) }} />
               <HStack center>
-                <Text center style={{ marginTop: 10 }}>
+                <Text center style={{ marginTop: verticalScale(10) }}>
                   Partnerler
                 </Text>
               </HStack>
@@ -403,11 +414,11 @@ const PaymentTabView = ({ allPayments, users, me, orgID }) => {
                   <Surface
                     style={{
                       backgroundColor: '#ecf0f1',
-                      height: 60,
-                      borderRadius: 15,
-                      marginTop: 7,
+                      height: verticalScale(60),
+                      borderRadius: moderateScale(15),
+                      marginTop: verticalScale(7),
                     }}>
-                    <View style={{ margin: 10 }}>
+                    <View style={{ margin: moderateScale(10) }}>
                       <HStack>
                         <Text>İsim: </Text>
                         {getOwnerName(item.PartnerId, users, me)}
@@ -441,9 +452,9 @@ export default PaymentTabView;
 
 const styles = StyleSheet.create({
   item: {
-    borderRadius: 15,
-    marginVertical: 3,
-    marginHorizontal: 16,
+    borderRadius: moderateScale(15),
+    marginVertical: verticalScale(3),
+    marginHorizontal: horizontalScale(16),
     width: horizontalScale(345),
     height: verticalScale(75),
     /*  borderRadius: 15,
@@ -453,17 +464,17 @@ const styles = StyleSheet.create({
   },
   pressable: {
     width: '100%',
-    height: 75,
+    height: verticalScale(75),
     backgroundColor: '#F5F5F5',
-    borderRadius: 15,
+    borderRadius: moderateScale(15),
     alignItems: 'flex-start',
   },
   title: {
-    marginLeft: 10,
-    fontSize: 20,
+    marginLeft: horizontalScale(10),
+    fontSize: moderateScale(20),
   },
   pressable_text: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
     width: '30%',
   },
 });

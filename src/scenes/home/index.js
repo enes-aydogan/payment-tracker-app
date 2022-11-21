@@ -16,7 +16,11 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { AuthContext } from '../../utils/AuthContext';
 import * as UserAction from '../../store/Actions/user/UserAction';
-import { horizontalScale, verticalScale } from '../../styles/metrics';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '../../styles/metrics';
 import * as PaymentAction from '../../store/Actions/payment/PaymentAction';
 
 const HomeScreen = ({ navigation }) => {
@@ -45,7 +49,12 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={{ margin: 5, marginTop: 5, backgroundColor: 'white' }}>
+    <View
+      style={{
+        margin: moderateScale(5),
+        marginTop: verticalScale(0),
+        backgroundColor: 'white',
+      }}>
       <VStack spacing={10}>
         <Carousel
           data={
@@ -59,25 +68,34 @@ const HomeScreen = ({ navigation }) => {
             <Surface
               elevation={8}
               style={{
-                margin: 12,
-                borderRadius: 10,
-                height: 200,
-                marginRight: 20,
+                margin: moderateScale(20),
+                borderRadius: moderateScale(10),
+                height: verticalScale(200),
+                marginRight: horizontalScale(20),
               }}>
               <VStack spacing={30} center>
                 <ShimmerPlaceHolder
-                  style={{ height: 30, marginTop: 40, borderRadius: 10 }}
+                  style={{
+                    height: verticalScale(40),
+                    marginTop: verticalScale(40),
+                    borderRadius: moderateScale(10),
+                  }}
                   autoRun
                   visible={!userLoading}
                   LinearGradient={LinearGradient}>
-                  <Text style={{ fontSize: 24 }}>{item.orgName}</Text>
+                  <Text style={{ fontSize: moderateScale(24) }}>
+                    {item.orgName}
+                  </Text>
                 </ShimmerPlaceHolder>
                 <ShimmerPlaceHolder
-                  style={{ height: 25, borderRadius: 10 }}
+                  style={{
+                    height: verticalScale(35),
+                    borderRadius: moderateScale(10),
+                  }}
                   autoRun
                   visible={!userLoading}
                   LinearGradient={LinearGradient}>
-                  <Text style={{ fontSize: 24 }}>
+                  <Text style={{ fontSize: moderateScale(24) }}>
                     Harcamam: {item.totalPayment}
                   </Text>
                 </ShimmerPlaceHolder>
@@ -87,8 +105,14 @@ const HomeScreen = ({ navigation }) => {
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width}
         />
-        <Divider style={{ marginTop: 15, flex: 1 }} leadingInset={16} />
-        <VStack style={{ marginTop: 6, height: 600 }} center spacing={10}>
+        <Divider
+          style={{ marginTop: verticalScale(15), margin: moderateScale(10) }}
+          leadingInset={16}
+        />
+        <VStack
+          style={{ marginTop: verticalScale(6), height: verticalScale(600) }}
+          center
+          spacing={10}>
           <FlatList
             data={loading ? listMockData : data.data}
             renderItem={({ item }) => (
@@ -108,13 +132,18 @@ const HomeScreen = ({ navigation }) => {
                     <HStack center fill spacing={30}>
                       <Box style={{ width: '20%' }}>
                         <Icon
-                          style={{ marginLeft: 15, alignItems: 'flex-start' }}
+                          style={{
+                            marginLeft: horizontalScale(15),
+                            alignItems: 'flex-start',
+                          }}
                           name="home-outline"
-                          size={35}
+                          size={moderateScale(35)}
                         />
                       </Box>
                       <Box style={{ width: '50%' }}>
-                        <Text style={{ fontSize: 20 }}>{item.orgName}</Text>
+                        <Text style={{ fontSize: moderateScale(20) }}>
+                          {item.orgName}
+                        </Text>
                       </Box>
                       <Box style={{ width: '10%' }}>
                         <Icon
@@ -139,9 +168,9 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   item: {
-    borderRadius: 25,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    borderRadius: moderateScale(25),
+    marginVertical: verticalScale(8),
+    marginHorizontal: horizontalScale(16),
     width: horizontalScale(330),
     height: verticalScale(90),
   },
@@ -149,11 +178,11 @@ const styles = StyleSheet.create({
     width: horizontalScale(330),
     height: verticalScale(90),
     backgroundColor: '#EAEAEA',
-    borderRadius: 25,
+    borderRadius: moderateScale(25),
   },
   title: {
-    marginLeft: 10,
-    fontSize: 20,
+    marginLeft: horizontalScale(10),
+    fontSize: moderateScale(20),
   },
   spinner: {
     flex: 1,
@@ -163,6 +192,6 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: moderateScale(10),
   },
 });
