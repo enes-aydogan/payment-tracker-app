@@ -14,4 +14,9 @@ export default {
     addUserToOrgError: null,
     addUserToOrgLoading: false,
   },
+  getCreateOrganization: {
+    createOrganizationData: [],
+    createOrganizationError: null,
+    createOrganizationLoading: false,
+  },
 };

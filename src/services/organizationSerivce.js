@@ -4,14 +4,18 @@ const getAll = _ => {
   return api.get('/org-user/getOrgsByUserID');
 };
 
-const addUserToOrg = orgUser => {
-  return api.post('/org-user/', {
-    orgID: orgUser.orgID,
-    userID: orgUser.userID,
+const createOrganization = organization => {
+  return api.post('/organization', {
+    name: organization.name,
+    address: organization.address,
   });
+};
+
+const addUserToOrg = orgUser => {
+  return api.post(`/org-user/${orgUser.userID}/${orgUser.orgID}`);
 };
 
 const getUsersByOrgID = orgID => {
   return api.get(`/org-user/${orgID}`);
 };
-export default { getAll, addUserToOrg, getUsersByOrgID };
+export default { getAll, addUserToOrg, getUsersByOrgID, createOrganization };

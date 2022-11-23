@@ -1,19 +1,53 @@
-import React, { useContext } from 'react';
-import { SafeAreaView, View, StyleSheet, Dimensions } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { Text, ListItem, Button } from '@react-native-material/core';
-import * as AuthAction from '../../store/Actions/auth/AuthAction';
-import { AuthContext } from '../../utils/AuthContext';
+import React, { useContext, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  Text,
+  ListItem,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogHeader,
+  DialogContent,
+  Stack,
+  TextInput,
+} from '@react-native-material/core';
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Dimensions,
+  Alert,
+} from 'react-native';
+
 import {
   horizontalScale,
   verticalScale,
   moderateScale,
 } from '../../styles/metrics';
+import { AuthContext } from '../../utils/AuthContext';
+import * as AuthAction from '../../store/Actions/auth/AuthAction';
+import * as OrgAction from '../../store/Actions/organization/OrgAction';
+
 const AboutScreen = () => {
+  const [visible, setVisible] = useState(false);
+  const [name, setName] = useState();
+  const [address, setAddress] = useState();
   const {
     authDispatch,
     authState: {},
+    orgDispatch,
+    orgState: {
+      getCreateOrganization: {
+        createOrganizationData,
+        createOrganizationError,
+        createOrganizationLoading,
+      },
+      getAddUserToOrg: {
+        addUserToOrgData,
+        addUserToOrgLoading,
+        addUserToOrgError,
+      },
+    },
   } = useContext(AuthContext);
 
   /*   const logout = async () => {
@@ -28,6 +62,44 @@ const AboutScreen = () => {
     AuthAction.logOut()(authDispatch);
   };
 
+  const createOrganization = () => {
+    let organization = {
+      name: name,
+      address: address,
+    };
+
+    Alert.alert('Uyarı!', 'Ev eklemek istediğinize emin misiniz?', [
+      {
+        text: 'İptal',
+      },
+      {
+        text: 'Evet',
+        onPress: () => {
+          OrgAction.createOrganization(organization)(orgDispatch)(res => {
+            if (res.success) {
+              OrgAction.addUserToOrg({
+                userID: res.data.ownerID,
+                orgID: res.data._id,
+              })(orgDispatch)(response => {
+                if (response.success) {
+                  setVisible(false);
+                  setName('');
+                  setAddress('');
+                  Alert.alert(
+                    'Başarılı!',
+                    'Yeni ev başarılı birşekilde oluşturulmuştur.',
+                  );
+                }
+              });
+            }
+          });
+        },
+      },
+    ]);
+
+    // alert atılacak, ve response a göre error alert or success alert will be shown for user
+  };
+
   return (
     <View
       style={{
@@ -39,7 +111,7 @@ const AboutScreen = () => {
           <Icon name="wallet-outline" size={moderateScale(22)} /> Ev Ayarları
         </Text>
       </View>
-      <ListItem title="Ev Ekle" />
+      <ListItem title="Ev Ekle" onPress={() => setVisible(true)} />
       <View style={styles.pressable}>
         <Text style={styles.pressable_text}>
           <Icon name="person-outline" size={moderateScale(22)} /> Ayarlar
@@ -47,6 +119,47 @@ const AboutScreen = () => {
       </View>
       <ListItem title="Bilgilerim" />
       <ListItem title="Çıkış Yap" onPress={() => logout()} />
+      <Dialog visible={visible} onDismiss={() => setVisible(false)}>
+        <DialogHeader title="Ev Ekle" />
+        <DialogContent>
+          <Stack spacing={2}>
+            <TextInput
+              value={name}
+              onChangeText={text => setName(text)}
+              color="#717D84"
+              label="İsim"
+              variant="standard"
+            />
+            <TextInput
+              value={address}
+              onChangeText={text => setAddress(text)}
+              color="#717D84"
+              label="Adres"
+              variant="standard"
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            title="Cancel"
+            compact
+            loading={addUserToOrgLoading}
+            disabled={addUserToOrgLoading}
+            variant="text"
+            color="#717D84"
+            onPress={() => setVisible(false)}
+          />
+          <Button
+            title="Ok"
+            compact
+            loading={addUserToOrgLoading}
+            disabled={addUserToOrgLoading}
+            variant="text"
+            color="#717D84"
+            onPress={() => createOrganization()}
+          />
+        </DialogActions>
+      </Dialog>
     </View>
   );
 };

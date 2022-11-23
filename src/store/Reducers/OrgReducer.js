@@ -103,6 +103,34 @@ export default orgReducer = (state, action) => {
           addUserToOrgLoading: false,
         },
       };
+    case OrgActionType.CREATE_ORGANIZATION_LOADING:
+      return {
+        ...state,
+        getCreateOrganization: {
+          ...state.getCreateOrganization,
+          createOrganizationError: null,
+          createOrganizationLoading: true,
+        },
+      };
+    case OrgActionType.CREATE_ORGANIZATION_SUCCESS:
+      return {
+        ...state,
+        getCreateOrganization: {
+          ...state.getCreateOrganization,
+          createOrganizationData: payload,
+          createOrganizationError: null,
+          createOrganizationLoading: false,
+        },
+      };
+    case OrgActionType.CREATE_ORGANIZATION_FAIL:
+      return {
+        ...state,
+        getCreateOrganization: {
+          ...state.getCreateOrganization,
+          createOrganizationError: payload,
+          createOrganizationLoading: false,
+        },
+      };
     default:
       return state;
   }

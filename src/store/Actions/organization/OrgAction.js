@@ -80,3 +80,30 @@ export const getUsersByOrgID = orgID => dispatch => {
       });
     });
 };
+
+export const createOrganization = organization => dispatch => onSuccess => {
+  dispatch({
+    type: OrgActionType.CREATE_ORGANIZATION_LOADING,
+  });
+  organizationSerivce
+    .createOrganization(organization)
+    .then(response => {
+      if (response.data.success) {
+        dispatch({
+          type: OrgActionType.CREATE_ORGANIZATION_SUCCESS,
+          payload: {
+            data: response.data.data,
+          },
+        });
+        onSuccess(response.data);
+      }
+    })
+    .catch(error => {
+      dispatch({
+        type: OrgActionType.CREATE_ORGANIZATION_FAIL,
+        payload: error.response
+          ? error.response.data
+          : { error: 'Something went wrong, try again' },
+      });
+    });
+};
